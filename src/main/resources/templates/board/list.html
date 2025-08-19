@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 목록</title>
+</head>
+<body>
+<table align="center">
+    <tr>
+        <td align="right">
+            total : <span th:text="${totalElements}"></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table id="boardTable" border="1">
+                <tr>
+                    <td width="80" align="center">
+                        Type
+                    </td>
+                    <td width="40" align="center">
+                        No
+                    </td>
+                    <td width="300" align="center">
+                        Title
+                    </td>
+                    <td width="120" align="center">
+                        Created
+                    </td>
+                </tr>
+                <tr th:each="board : ${boardList}">
+                    <td align="center" th:text="${board.boardType}">
+                    </td>
+                    <td th:text="${board.boardNum}">
+                    </td>
+                    <td>
+                        <a th:href="@{/board/view/{boardNum}(boardNum=${board.boardNum})}"
+                           th:text="${board.boardTitle}"></a>
+                    </td>
+                    <td align="center" th:text="${#temporals.format(board.createTime, 'MM-dd HH:mm')}">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <!-- 페이징 처리 -->
+    <tr>
+        <td align="center">
+            <!-- 이전 페이지 -->
+            <span th:if="${hasPrevious}">
+                    <a th:href="@{/board/list(pageNo=${currentPage - 1})}">이전</a>
+                </span>
+
+            <!-- 페이지 번호 -->
+            <span th:each="page : ${#numbers.sequence(1, totalPages)}" th:if="${totalPages > 0}">
+                    <span th:if="${page == currentPage}" th:text="${page}" style="font-weight: bold;"></span>
+                    <a th:if="${page != currentPage}" th:href="@{/board/list(pageNo=${page})}" th:text="${page}"></a>
+                    <span th:if="${!pageStat.last}"> | </span>
+                </span>
+
+            <!-- 다음 페이지 -->
+            <span th:if="${hasNext}">
+                    <a th:href="@{/board/list(pageNo=${currentPage + 1})}">다음</a>
+                </span>
+        </td>
+    </tr>
+
+    <tr>
+        <td align="right">
+            <a th:href="@{/board/write}">글쓰기</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

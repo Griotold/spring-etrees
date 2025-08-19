@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성</title>
+</head>
+<body>
+<form th:action="@{/board/write}" th:object="${boardCreateRequest}" method="post">
+    <table align="center">
+        <tr>
+            <td align="right">
+                <input type="submit" value="작성">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table border="1">
+                    <tr>
+                        <td width="120" align="center">
+                            Title
+                        </td>
+                        <td width="400">
+                            <input th:field="*{boardTitle}" type="text" size="50">
+                            <div th:if="${#fields.hasErrors('boardTitle')}" th:errors="*{boardTitle}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="300" align="center">
+                            Comment
+                        </td>
+                        <td valign="top">
+                            <textarea th:field="*{boardComment}" rows="20" cols="55"></textarea>
+                            <div th:if="${#fields.hasErrors('boardComment')}" th:errors="*{boardComment}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            Writer
+                        </td>
+                        <td>
+                            SYSTEM
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <a th:href="@{/board/list}">List</a>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

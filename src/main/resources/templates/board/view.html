@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+</head>
+<body>
+<table align="center">
+    <tr>
+        <td>
+            <table border="1">
+                <tr>
+                    <td width="120" align="center">
+                        Title
+                    </td>
+                    <td width="400" th:text="${board.boardTitle}">
+                    </td>
+                </tr>
+                <tr>
+                    <td height="300" align="center">
+                        Comment
+                    </td>
+                    <td th:text="${board.boardComment}" style="white-space: pre-wrap;">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        Writer
+                    </td>
+                    <td th:text="${board.creator}">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        Created
+                    </td>
+                    <td th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <a th:href="@{/board/list}">List</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
