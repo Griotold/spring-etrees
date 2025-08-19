@@ -4,9 +4,11 @@ import com.example.spring_etrees.application.board.provided.BoardCreator;
 import com.example.spring_etrees.application.board.provided.BoardFinder;
 import com.example.spring_etrees.application.board.provided.BoardModifier;
 import com.example.spring_etrees.application.reply.provided.ReplyCreator;
+import com.example.spring_etrees.application.reply.provided.ReplyFinder;
 import com.example.spring_etrees.domain.board.Board;
 import com.example.spring_etrees.domain.board.BoardCreateRequest;
 import com.example.spring_etrees.domain.board.BoardUpdateRequest;
+import com.example.spring_etrees.domain.reply.Reply;
 import com.example.spring_etrees.domain.reply.ReplyCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/board")
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class BoardController {
     private final BoardFinder boardFinder;
     private final BoardModifier boardModifier;
     private final ReplyCreator replyCreator;
+    private final ReplyFinder replyFinder;
 
     /**
      * 게시글 목록 페이지
@@ -53,8 +58,9 @@ public class BoardController {
     @GetMapping("/view/{boardNum}")
     public String boardView(@PathVariable Long boardNum, Model model) {
         Board board = boardFinder.getBoard(boardNum);
+        List<Reply> replies = replyFinder.getRepliesByBoard(boardNum);
         model.addAttribute("board", board);
-        // 댓글 작성용 빈 객체 추가
+        model.addAttribute("replies", replies);
         model.addAttribute("replyCreateRequest", new ReplyCreateRequest(boardNum, ""));
         return "board/view";
     }

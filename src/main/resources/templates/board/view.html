@@ -41,10 +41,21 @@
             </table>
         </td>
     </tr>
-    <!-- 기존 게시글 테이블 후에 추가 -->
+
+    <tr>
+        <td align="right">
+            <a th:href="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}">Edit</a> |
+            <form th:action="@{/board/delete/{boardNum}(boardNum=${board.boardNum})}" method="post" style="display: inline;"
+                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <input type="submit" value="Delete" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">
+            </form> |
+            <a th:href="@{/board/list}">List</a>
+        </td>
+    </tr>
+
+    <!-- 댓글 입력 폼 (기존) -->
     <tr>
         <td>
-            <!-- 댓글 입력 폼 -->
             <form th:action="@{/board/view/{boardNum}/reply(boardNum=${board.boardNum})}"
                   th:object="${replyCreateRequest}" method="post">
                 <table border="1" style="margin-top: 20px;">
@@ -67,14 +78,34 @@
         </td>
     </tr>
 
+    <!-- 댓글 목록 (입력 폼 아래로 이동) -->
     <tr>
-        <td align="right">
-            <a th:href="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}">Edit</a> |
-            <form th:action="@{/board/delete/{boardNum}(boardNum=${board.boardNum})}" method="post" style="display: inline;"
-                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                <input type="submit" value="Delete" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">
-            </form> |
-            <a th:href="@{/board/list}">List</a>
+        <td>
+            <!-- 댓글 목록 -->
+            <div th:if="${replies != null and !replies.isEmpty()}">
+                <table border="1" style="margin-top: 10px;">
+                    <tr>
+                        <td colspan="2" align="center" style="background-color: #f0f0f0;">
+                            <strong>댓글 목록</strong>
+                        </td>
+                    </tr>
+                    <tr th:each="reply : ${replies}">
+                        <td width="520" style="padding: 10px;">
+                            <div style="margin-bottom: 5px;">
+                                <strong th:text="${reply.creator}">작성자</strong>
+                                <span style="color: #888; font-size: 12px;"
+                                      th:text="${#temporals.format(reply.createTime, 'yyyy-MM-dd HH:mm')}">작성시간</span>
+                            </div>
+                            <div th:text="${reply.replyContent}" style="white-space: pre-wrap;">댓글 내용</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 댓글이 없을 때 -->
+            <div th:if="${replies == null or replies.isEmpty()}" style="margin-top: 10px; text-align: center; color: #888;">
+                등록된 댓글이 없습니다.
+            </div>
         </td>
     </tr>
 </table>
