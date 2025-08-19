@@ -3,9 +3,11 @@ package com.example.spring_etrees.adapter.web;
 import com.example.spring_etrees.application.board.provided.BoardCreator;
 import com.example.spring_etrees.application.board.provided.BoardFinder;
 import com.example.spring_etrees.application.board.provided.BoardModifier;
+import com.example.spring_etrees.application.reply.provided.ReplyCreator;
 import com.example.spring_etrees.domain.board.Board;
 import com.example.spring_etrees.domain.board.BoardCreateRequest;
 import com.example.spring_etrees.domain.board.BoardUpdateRequest;
+import com.example.spring_etrees.domain.reply.ReplyCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ public class BoardController {
     private final BoardCreator boardCreator;
     private final BoardFinder boardFinder;
     private final BoardModifier boardModifier;
+    private final ReplyCreator replyCreator;
 
     /**
      * 게시글 목록 페이지
@@ -51,6 +54,8 @@ public class BoardController {
     public String boardView(@PathVariable Long boardNum, Model model) {
         Board board = boardFinder.getBoard(boardNum);
         model.addAttribute("board", board);
+        // 댓글 작성용 빈 객체 추가
+        model.addAttribute("replyCreateRequest", new ReplyCreateRequest(boardNum, ""));
         return "board/view";
     }
 
@@ -73,6 +78,9 @@ public class BoardController {
         return "redirect:/board/view/" + boardNum;
     }
 
+    /**
+     * 게시글 수정 처리
+     * */
     @PostMapping("/edit/{boardNum}")
     public String update(@PathVariable Long boardNum,
                          @Valid @ModelAttribute BoardUpdateRequest request) {
@@ -105,5 +113,16 @@ public class BoardController {
     public String delete(@PathVariable Long boardNum) {
         boardModifier.deleteBoard(boardNum);
         return "redirect:/board/list";
+    }
+
+// 댓글 생성 처리 메서드 추가
+    /**
+     * 댓글 작성 처리
+     */
+    @PostMapping("/view/{boardNum}/reply")
+    public String createReply(@PathVariable Long boardNum,
+                              @Valid @ModelAttribute ReplyCreateRequest request) {
+        replyCreator.createReply(request);
+        return "redirect:/board/view/" + boardNum;
     }
 }

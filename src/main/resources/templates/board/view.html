@@ -41,6 +41,32 @@
             </table>
         </td>
     </tr>
+    <!-- 기존 게시글 테이블 후에 추가 -->
+    <tr>
+        <td>
+            <!-- 댓글 입력 폼 -->
+            <form th:action="@{/board/view/{boardNum}/reply(boardNum=${board.boardNum})}"
+                  th:object="${replyCreateRequest}" method="post">
+                <table border="1" style="margin-top: 20px;">
+                    <tr>
+                        <td width="120" align="center">
+                            댓글 작성
+                        </td>
+                        <td width="400">
+                            <textarea th:field="*{replyContent}" rows="3" cols="55" placeholder="댓글을 입력하세요"></textarea>
+                            <div th:if="${#fields.hasErrors('replyContent')}" th:errors="*{replyContent}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="right">
+                            <input type="submit" value="댓글 작성">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+    </tr>
+
     <tr>
         <td align="right">
             <a th:href="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}">Edit</a> |

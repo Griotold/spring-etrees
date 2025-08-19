@@ -1,0 +1,34 @@
+package com.example.spring_etrees.application.reply;
+
+import com.example.spring_etrees.application.board.required.BoardRepository;
+import com.example.spring_etrees.application.reply.provided.ReplyCreator;
+import com.example.spring_etrees.application.reply.required.ReplyRepository;
+import com.example.spring_etrees.domain.board.Board;
+import com.example.spring_etrees.domain.reply.Reply;
+import com.example.spring_etrees.domain.reply.ReplyCreateRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class ReplyModifyService implements ReplyCreator {
+
+    private final ReplyRepository replyRepository;
+    private final BoardRepository boardRepository;
+
+    @Override
+    public Long createReply(ReplyCreateRequest request) {
+        // 게시글 조회
+        Board board = boardRepository.findById(request.boardNum())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + request.boardNum()));
+
+        // 댓글 생성
+        Reply reply = Reply.create(board, request.replyContent());
+
+        // 저장 후 생성된 ID 반환
+        Reply savedReply = replyRepository.save(reply);
+        return savedReply.getReplyNum();
+    }
+}
