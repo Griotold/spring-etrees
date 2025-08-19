@@ -91,10 +91,22 @@
                     </tr>
                     <tr th:each="reply : ${replies}">
                         <td width="520" style="padding: 10px;">
-                            <div style="margin-bottom: 5px;">
-                                <strong th:text="${reply.creator}">작성자</strong>
-                                <span style="color: #888; font-size: 12px;"
-                                      th:text="${#temporals.format(reply.createTime, 'yyyy-MM-dd HH:mm')}">작성시간</span>
+                            <div style="margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong th:text="${reply.creator}">작성자</strong>
+                                    <span style="color: #888; font-size: 12px;"
+                                          th:text="${#temporals.format(reply.createTime, 'yyyy-MM-dd HH:mm')}">작성시간</span>
+                                </div>
+                                <div>
+                                    <a th:href="@{/board/view/{boardNum}/reply/{replyNum}/edit(boardNum=${board.boardNum},replyNum=${reply.replyNum})}" 
+                                       style="font-size: 12px;">수정</a> |
+                                    <form th:action="@{/board/view/{boardNum}/reply/{replyNum}/delete(boardNum=${board.boardNum},replyNum=${reply.replyNum})}" 
+                                          method="post" style="display: inline;" 
+                                          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                        <input type="submit" value="삭제" 
+                                               style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font-size: 12px;">
+                                    </form>
+                                </div>
                             </div>
                             <div th:text="${reply.replyContent}" style="white-space: pre-wrap;">댓글 내용</div>
                         </td>

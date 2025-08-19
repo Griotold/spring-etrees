@@ -20,4 +20,10 @@ public class ReplyQueryService implements ReplyFinder {
     public List<Reply> getRepliesByBoard(Long boardNum) {
         return replyRepository.findByBoardBoardNumOrderByCreateTimeAsc(boardNum);
     }
+
+    @Override
+    public Reply getReply(Long replyNum) {
+        return replyRepository.findById(replyNum)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다. id=" + replyNum));
+    }
 }
