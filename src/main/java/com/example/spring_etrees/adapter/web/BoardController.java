@@ -2,8 +2,10 @@ package com.example.spring_etrees.adapter.web;
 
 import com.example.spring_etrees.application.board.provided.BoardCreator;
 import com.example.spring_etrees.application.board.provided.BoardFinder;
+import com.example.spring_etrees.application.board.provided.BoardModifier;
 import com.example.spring_etrees.domain.board.Board;
 import com.example.spring_etrees.domain.board.BoardCreateRequest;
+import com.example.spring_etrees.domain.board.BoardUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ public class BoardController {
 
     private final BoardCreator boardCreator;
     private final BoardFinder boardFinder;
+    private final BoardModifier boardModifier;
 
     /**
      * 게시글 목록 페이지
@@ -65,21 +68,33 @@ public class BoardController {
      * 게시글 작성 처리
      */
     @PostMapping("/write")
-    public String boardWrite(@Valid @ModelAttribute BoardCreateRequest request,
-                             BindingResult bindingResult,
-                             Model model) {
+    public String create(@Valid @ModelAttribute BoardCreateRequest request) {
+        Long boardNum = boardCreator.createBoard(request);
+        return "redirect:/board/view/" + boardNum;
+    }
 
-        // 검증 실패시 폼으로 돌아감
-        if (bindingResult.hasErrors()) {
-            return "board/write";
-        }
+    @PostMapping("/edit/{boardNum}")
+    public String update(@PathVariable Long boardNum,
+                         @Valid @ModelAttribute BoardUpdateRequest request) {
+        boardModifier.updateBoard(boardNum, request);
+        return "redirect:/board/view/" + boardNum;
+    }
 
-        // 게시글 생성
-        Long boardNum = boardCreator.createBoard(
-                request.boardTitle(),
-                request.boardComment()
+    /**
+     * 게시글 수정 폼 페이지
+     */
+    @GetMapping("/edit/{boardNum}")
+    public String boardEditForm(@PathVariable Long boardNum, Model model) {
+        Board board = boardFinder.getBoard(boardNum);
+
+        // 기존 게시글 정보로 수정 요청 객체 생성
+        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(
+                board.getBoardTitle(),
+                board.getBoardComment()
         );
 
-        return "redirect:/board/view/" + boardNum;
+        model.addAttribute("board", board);
+        model.addAttribute("boardUpdateRequest", boardUpdateRequest);
+        return "board/edit";  // 수정 폼 템플릿
     }
 }

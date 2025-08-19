@@ -46,15 +46,22 @@ public class Board {
     @Column(name = "MODIFIED_TIME")
     private LocalDateTime modifiedTime;
 
-    // 도메인 메서드 - 게시글 생성
     public static Board create(String boardTitle, String boardComment) {
         Board board = new Board();
+
         board.boardType = "1";  // 기본 게시판 타입
         board.boardTitle = boardTitle;
         board.boardComment = boardComment;
         board.creator = "SYSTEM";  // 현재는 고정값, 추후 로그인 기능 추가시 변경
         board.modifier = "SYSTEM";
+
         return board;
+    }
+
+    public void update(String boardTitle, String boardComment) {
+        this.boardTitle = boardTitle;
+        this.boardComment = boardComment;
+        this.modifier = "SYSTEM";  // 현재는 고정값, 추후 로그인 기능 추가시 변경
     }
 
 }
