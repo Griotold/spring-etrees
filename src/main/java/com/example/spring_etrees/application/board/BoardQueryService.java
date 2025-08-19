@@ -1,6 +1,7 @@
-package com.example.spring_etrees.application.board.required;
+package com.example.spring_etrees.application.board;
 
 import com.example.spring_etrees.application.board.provided.BoardFinder;
+import com.example.spring_etrees.application.board.required.BoardRepository;
 import com.example.spring_etrees.domain.board.Board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

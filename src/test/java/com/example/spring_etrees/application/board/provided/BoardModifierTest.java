@@ -119,6 +119,39 @@ class BoardModifierTest {
         ));
     }
 
+    @Test
+    void deleteBoard_성공() {
+        // given
+        Long boardNum = 1L;
+        Board existingBoard = Board.create("제목", "내용");
+        setField(existingBoard, "boardNum", boardNum);
+
+        given(boardRepository.findById(boardNum)).willReturn(Optional.of(existingBoard));
+
+        // when - 인터페이스로 테스트
+        boardModifier.deleteBoard(boardNum);
+
+        // then
+        then(boardRepository).should().findById(boardNum);
+        then(boardRepository).should().delete(existingBoard);
+    }
+
+    @Test
+    void deleteBoard_존재하지않는게시글_예외발생() {
+        // given
+        Long boardNum = 999L;
+
+        given(boardRepository.findById(boardNum)).willReturn(Optional.empty());
+
+        // when & then - 인터페이스로 테스트
+        assertThatThrownBy(() -> boardModifier.deleteBoard(boardNum))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 게시글이 존재하지 않습니다. id=" + boardNum);
+
+        then(boardRepository).should().findById(boardNum);
+        then(boardRepository).should(never()).delete(any(Board.class));
+    }
+
     // Reflection을 사용한 필드 설정 헬퍼 메서드
     private void setField(Object target, String fieldName, Object value) {
         try {

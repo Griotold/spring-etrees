@@ -10,4 +10,10 @@ public interface BoardModifier {
      * @param request 게시글 수정 요청
      */
     void updateBoard(Long boardNum, BoardUpdateRequest request);
+
+    /**
+     * 게시글 삭제
+     * @param boardNum 게시글 번호
+     */
+    void deleteBoard(Long boardNum);
 }

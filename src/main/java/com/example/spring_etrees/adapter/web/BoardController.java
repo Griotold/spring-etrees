@@ -97,4 +97,13 @@ public class BoardController {
         model.addAttribute("boardUpdateRequest", boardUpdateRequest);
         return "board/edit";  // 수정 폼 템플릿
     }
+
+    /**
+     * 게시글 삭제 처리
+     */
+    @PostMapping("/delete/{boardNum}")
+    public String delete(@PathVariable Long boardNum) {
+        boardModifier.deleteBoard(boardNum);
+        return "redirect:/board/list";
+    }
 }

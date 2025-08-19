@@ -39,4 +39,13 @@ public class BoardModifyService implements BoardCreator, BoardModifier {
         // 명시적 save 호출
         boardRepository.save(board);
     }
+
+    @Override
+    public void deleteBoard(Long boardNum) {
+        // 존재 여부 확인 후 삭제
+        Board board = boardRepository.findById(boardNum)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardNum));
+
+        boardRepository.delete(board);
+    }
 }
