@@ -2,6 +2,9 @@ package com.example.spring_etrees.application.board.required;
 
 import com.example.spring_etrees.application.reply.required.ReplyRepository;
 import com.example.spring_etrees.domain.board.Board;
+import com.example.spring_etrees.domain.board.BoardCreateRequest;
+import com.example.spring_etrees.domain.board.BoardFixture;
+import com.example.spring_etrees.domain.board.BoardType;
 import com.example.spring_etrees.domain.reply.Reply;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -29,7 +32,7 @@ class ReplyRepositoryTest {
     @Test
     void 게시글삭제시_댓글들도_함께삭제된다() {
         // given - 게시글 생성
-        Board board = Board.create("테스트 게시글", "테스트 내용");
+        Board board = BoardFixture.createBoard();
         Board savedBoard = boardRepository.save(board);
 
         // flush로 즉시 DB에 반영하고 영속성 컨텍스트 동기화
@@ -65,8 +68,11 @@ class ReplyRepositoryTest {
     @Test
     void 다른게시글의_댓글은_삭제되지않는다() {
         // given - 두 개의 게시글 생성
-        Board board1 = Board.create("첫 번째 게시글", "내용1");
-        Board board2 = Board.create("두 번째 게시글", "내용2");
+        BoardCreateRequest request1 = new BoardCreateRequest(BoardType.GENERAL, "첫 번째 게시글", "내용1");
+        BoardCreateRequest request2 = new BoardCreateRequest(BoardType.GENERAL, "두 번째 게시글", "내용2");
+
+        Board board1 = Board.create(request1);
+        Board board2 = Board.create(request2);
         Board savedBoard1 = boardRepository.save(board1);
         Board savedBoard2 = boardRepository.save(board2);
 

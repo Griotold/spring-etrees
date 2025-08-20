@@ -30,7 +30,7 @@
                     </td>
                 </tr>
                 <tr th:each="board : ${boardList}">
-                    <td align="center" th:text="${board.boardType}">
+                    <td align="center" th:text="${board.boardType.description}">
                     </td>
                     <td th:text="${board.boardNum}">
                     </td>

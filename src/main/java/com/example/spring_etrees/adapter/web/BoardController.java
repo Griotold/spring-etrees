@@ -40,10 +40,12 @@ public class BoardController {
      * 게시글 목록 페이지
      */
     @GetMapping("/list")
-    public String boardList(@RequestParam(defaultValue = "1") int pageNo, Model model) {
+    public String boardList(@RequestParam(defaultValue = "all") String type,
+                            @RequestParam(defaultValue = "1") int pageNo,
+                            Model model) {
         // 페이지 번호는 1부터 시작하므로 -1 처리, 기본 5건씩 조회
         Pageable pageable = PageRequest.of(pageNo - 1, 5);
-        Page<Board> boardPage = boardFinder.getBoardList(pageable);
+        Page<Board> boardPage = boardFinder.getBoardList(type, pageable);
 
         model.addAttribute("boardList", boardPage.getContent());
         model.addAttribute("currentPage", pageNo);
@@ -51,6 +53,7 @@ public class BoardController {
         model.addAttribute("totalElements", boardPage.getTotalElements());
         model.addAttribute("hasNext", boardPage.hasNext());
         model.addAttribute("hasPrevious", boardPage.hasPrevious());
+        model.addAttribute("selectedType", type); // 선택된 타입 전달
 
         return "board/list";
     }
@@ -74,7 +77,7 @@ public class BoardController {
     @GetMapping("/write")
     public String boardWriteForm(Model model) {
         // 빈 DTO 객체를 모델에 추가 (Thymeleaf 폼 바인딩용)
-        model.addAttribute("boardCreateRequest", new BoardCreateRequest("", ""));
+        model.addAttribute("boardCreateRequest", new BoardCreateRequest(null, "", ""));
         return "board/write";
     }
 

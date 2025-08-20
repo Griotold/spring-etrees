@@ -2,9 +2,7 @@ package com.example.spring_etrees.application.board.provided;
 
 import com.example.spring_etrees.application.board.BoardModifyService;
 import com.example.spring_etrees.application.board.required.BoardRepository;
-import com.example.spring_etrees.domain.board.Board;
-import com.example.spring_etrees.domain.board.BoardCreateRequest;
-import com.example.spring_etrees.domain.board.BoardUpdateRequest;
+import com.example.spring_etrees.domain.board.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,8 +41,8 @@ class BoardModifierTest {
     @Test
     void createBoard_성공() {
         // given
-        BoardCreateRequest request = new BoardCreateRequest("테스트 제목", "테스트 내용");
-        Board savedBoard = Board.create(request.boardTitle(), request.boardComment());
+        BoardCreateRequest request = new BoardCreateRequest(BoardType.GENERAL, "테스트 제목", "테스트 내용");
+        Board savedBoard = Board.create(request);
         // boardNum을 설정하기 위해 reflection 사용 (실제로는 DB에서 자동 생성)
         setField(savedBoard, "boardNum", 1L);
 
@@ -63,7 +61,7 @@ class BoardModifierTest {
         // given
         Long boardNum = 1L;
         BoardUpdateRequest request = new BoardUpdateRequest("수정된 제목", "수정된 내용");
-        Board existingBoard = Board.create("원본 제목", "원본 내용");
+        Board existingBoard = BoardFixture.createBoard();
         setField(existingBoard, "boardNum", boardNum);
 
         given(boardRepository.findById(boardNum)).willReturn(Optional.of(existingBoard));
@@ -84,7 +82,7 @@ class BoardModifierTest {
     void updateBoard_존재하지않는게시글_예외발생() {
         // given
         Long boardNum = 999L;
-        BoardUpdateRequest request = new BoardUpdateRequest("수정된 제목", "수정된 내용");
+        BoardUpdateRequest request = BoardFixture.createBoardUpdateRequest();
 
         given(boardRepository.findById(boardNum)).willReturn(Optional.empty());
 
@@ -100,8 +98,8 @@ class BoardModifierTest {
     @Test
     void createBoard_도메인메서드호출확인() {
         // given
-        BoardCreateRequest request = new BoardCreateRequest("제목", "내용");
-        Board savedBoard = Board.create(request.boardTitle(), request.boardComment());
+        BoardCreateRequest request = BoardFixture.createBoardCreateRequest();
+        Board savedBoard = BoardFixture.createBoard();
         setField(savedBoard, "boardNum", 1L);
 
         given(boardRepository.save(any(Board.class))).willReturn(savedBoard);
@@ -111,9 +109,9 @@ class BoardModifierTest {
 
         // then
         then(boardRepository).should().save(argThat(board ->
-                board.getBoardTitle().equals("제목") &&
-                        board.getBoardComment().equals("내용") &&
-                        board.getBoardType().equals("1") &&
+                board.getBoardTitle().equals("테스트 제목") &&          // Fixture의 실제 값
+                        board.getBoardComment().equals("테스트 내용") &&  // Fixture의 실제 값
+                        board.getBoardType().equals(BoardType.GENERAL) && // Enum으로 비교
                         board.getCreator().equals("SYSTEM") &&
                         board.getModifier().equals("SYSTEM")
         ));
@@ -123,7 +121,7 @@ class BoardModifierTest {
     void deleteBoard_성공() {
         // given
         Long boardNum = 1L;
-        Board existingBoard = Board.create("제목", "내용");
+        Board existingBoard = BoardFixture.createBoard();
         setField(existingBoard, "boardNum", boardNum);
 
         given(boardRepository.findById(boardNum)).willReturn(Optional.of(existingBoard));

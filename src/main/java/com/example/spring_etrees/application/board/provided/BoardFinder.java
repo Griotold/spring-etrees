@@ -7,11 +7,12 @@ import org.springframework.data.domain.Pageable;
 public interface BoardFinder {
 
     /**
-     * 게시글 목록 조회 (페이징)
+     * 게시글 목록 조회 (타입별 필터링 지원)
+     * @param type 게시판 타입 ("all" 또는 BoardType name)
      * @param pageable 페이지 번호 (1부터 시작)
      * @return 게시글 목록 (5건씩)
      */
-    Page<Board> getBoardList(Pageable pageable);
+    Page<Board> getBoardList(String type, Pageable pageable);
 
     /**
      * 게시글 상세 조회

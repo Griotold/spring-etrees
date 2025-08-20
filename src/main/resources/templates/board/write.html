@@ -18,6 +18,25 @@
                 <table border="1">
                     <tr>
                         <td width="120" align="center">
+                            Type
+                        </td>
+                        <td width="400">
+                            <select th:field="*{boardType}">
+                                <option value="">-- 게시판 타입 선택 --</option>
+                                <option th:value="${T(com.example.spring_etrees.domain.board.BoardType).GENERAL}" 
+                                        th:text="${T(com.example.spring_etrees.domain.board.BoardType).GENERAL.description}">일반</option>
+                                <option th:value="${T(com.example.spring_etrees.domain.board.BoardType).QNA}" 
+                                        th:text="${T(com.example.spring_etrees.domain.board.BoardType).QNA.description}">Q&A</option>
+                                <option th:value="${T(com.example.spring_etrees.domain.board.BoardType).ANONYMOUS}" 
+                                        th:text="${T(com.example.spring_etrees.domain.board.BoardType).ANONYMOUS.description}">익명</option>
+                                <option th:value="${T(com.example.spring_etrees.domain.board.BoardType).FREE}" 
+                                        th:text="${T(com.example.spring_etrees.domain.board.BoardType).FREE.description}">자유</option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('boardType')}" th:errors="*{boardType}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="120" align="center">
                             Title
                         </td>
                         <td width="400">

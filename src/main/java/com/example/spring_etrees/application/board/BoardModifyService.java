@@ -20,7 +20,7 @@ public class BoardModifyService implements BoardCreator, BoardModifier {
     @Override
     public Long createBoard(BoardCreateRequest request) {
         // 도메인 메서드 사용하여 게시글 생성
-        Board board = Board.create(request.boardTitle(), request.boardComment());
+        Board board = Board.create(request);
 
         // 저장 후 생성된 ID 반환
         Board savedBoard = boardRepository.save(board);
@@ -34,7 +34,7 @@ public class BoardModifyService implements BoardCreator, BoardModifier {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardNum));
 
         // 도메인 메서드로 수정
-        board.update(request.boardTitle(), request.boardComment());
+        board.update(request);
 
         // 명시적 save 호출
         boardRepository.save(board);
