@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
             Member member = memberFinder.findByUsername(username);
-            return new CustomUserDetails(member);
+            return new LoginUser(member);
         } catch (IllegalArgumentException e) {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username, e);
         }

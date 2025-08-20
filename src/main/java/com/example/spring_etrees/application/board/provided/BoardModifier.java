@@ -9,7 +9,7 @@ public interface BoardModifier {
      * @param boardNum 게시글 번호
      * @param request 게시글 수정 요청
      */
-    void updateBoard(Long boardNum, BoardUpdateRequest request);
+    void updateBoard(Long boardNum, BoardUpdateRequest request, String modifier);
 
     /**
      * 게시글 삭제

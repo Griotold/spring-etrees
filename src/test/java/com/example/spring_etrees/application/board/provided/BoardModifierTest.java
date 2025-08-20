@@ -42,14 +42,15 @@ class BoardModifierTest {
     void createBoard_성공() {
         // given
         BoardCreateRequest request = new BoardCreateRequest(BoardType.GENERAL, "테스트 제목", "테스트 내용");
-        Board savedBoard = Board.create(request);
+        String creator = "testUser";
+        Board savedBoard = BoardFixture.createBoard(creator);
         // boardNum을 설정하기 위해 reflection 사용 (실제로는 DB에서 자동 생성)
         setField(savedBoard, "boardNum", 1L);
 
         given(boardRepository.save(any(Board.class))).willReturn(savedBoard);
 
-        // when - 인터페이스로 테스트
-        Long result = boardCreator.createBoard(request);
+        // when - 인터페이스로 테스트 (creator 파라미터 추가)
+        Long result = boardCreator.createBoard(request, creator);
 
         // then
         assertThat(result).isEqualTo(1L);
@@ -61,18 +62,19 @@ class BoardModifierTest {
         // given
         Long boardNum = 1L;
         BoardUpdateRequest request = new BoardUpdateRequest("수정된 제목", "수정된 내용");
-        Board existingBoard = BoardFixture.createBoard();
+        String modifier = "testModifier";
+        Board existingBoard = BoardFixture.createBoard("originalCreator");
         setField(existingBoard, "boardNum", boardNum);
 
         given(boardRepository.findById(boardNum)).willReturn(Optional.of(existingBoard));
 
-        // when - 인터페이스로 테스트
-        boardModifier.updateBoard(boardNum, request);
+        // when - 인터페이스로 테스트 (modifier 파라미터 추가)
+        boardModifier.updateBoard(boardNum, request, modifier);
 
         // then
         assertThat(existingBoard.getBoardTitle()).isEqualTo("수정된 제목");
         assertThat(existingBoard.getBoardComment()).isEqualTo("수정된 내용");
-        assertThat(existingBoard.getModifier()).isEqualTo("SYSTEM");
+        assertThat(existingBoard.getModifier()).isEqualTo("testModifier"); // 변경된 값 검증
 
         then(boardRepository).should().findById(boardNum);
         then(boardRepository).should().save(existingBoard);
@@ -83,11 +85,12 @@ class BoardModifierTest {
         // given
         Long boardNum = 999L;
         BoardUpdateRequest request = BoardFixture.createBoardUpdateRequest();
+        String modifier = "testModifier";
 
         given(boardRepository.findById(boardNum)).willReturn(Optional.empty());
 
-        // when & then - 인터페이스로 테스트
-        assertThatThrownBy(() -> boardModifier.updateBoard(boardNum, request))
+        // when & then - 인터페이스로 테스트 (modifier 파라미터 추가)
+        assertThatThrownBy(() -> boardModifier.updateBoard(boardNum, request, modifier))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 게시글이 존재하지 않습니다. id=" + boardNum);
 
@@ -99,21 +102,22 @@ class BoardModifierTest {
     void createBoard_도메인메서드호출확인() {
         // given
         BoardCreateRequest request = BoardFixture.createBoardCreateRequest();
-        Board savedBoard = BoardFixture.createBoard();
+        String creator = "testCreator";
+        Board savedBoard = BoardFixture.createBoard(creator);
         setField(savedBoard, "boardNum", 1L);
 
         given(boardRepository.save(any(Board.class))).willReturn(savedBoard);
 
-        // when - 인터페이스로 테스트
-        boardCreator.createBoard(request);
+        // when - 인터페이스로 테스트 (creator 파라미터 추가)
+        boardCreator.createBoard(request, creator);
 
         // then
         then(boardRepository).should().save(argThat(board ->
                 board.getBoardTitle().equals("테스트 제목") &&          // Fixture의 실제 값
                         board.getBoardComment().equals("테스트 내용") &&  // Fixture의 실제 값
                         board.getBoardType().equals(BoardType.GENERAL) && // Enum으로 비교
-                        board.getCreator().equals("SYSTEM") &&
-                        board.getModifier().equals("SYSTEM")
+                        board.getCreator().equals("testCreator") &&      // 변경된 값
+                        board.getModifier().equals("testCreator")        // 변경된 값 (생성자와 동일)
         ));
     }
 

@@ -50,22 +50,22 @@ public class Board {
     private LocalDateTime modifiedTime;
 
 
-    public static Board create(BoardCreateRequest request) {
+    public static Board create(BoardCreateRequest request, String creator) {
         Board board = new Board();
 
         board.boardType = request.boardType(); // 변환된 BoardType 사용
         board.boardTitle = requireNonNull(request.boardTitle());
         board.boardComment = requireNonNull(request.boardComment());
-        board.creator = "SYSTEM";  // 현재는 고정값, 추후 로그인 기능 추가시 변경
-        board.modifier = "SYSTEM";
+        board.creator = requireNonNull(creator);
+        board.modifier = requireNonNull(creator);
 
         return board;
     }
 
-    public void update(BoardUpdateRequest request) {
+    public void update(BoardUpdateRequest request, String modifier) {
         this.boardTitle = requireNonNull(request.boardTitle());
         this.boardComment = requireNonNull(request.boardComment());
-        this.modifier = "SYSTEM";  // 현재는 고정값, 추후 로그인 기능 추가시 변경
+        this.modifier = requireNonNull(modifier);
     }
 
 }

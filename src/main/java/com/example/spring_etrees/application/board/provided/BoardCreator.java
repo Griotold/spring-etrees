@@ -9,5 +9,5 @@ public interface BoardCreator {
      * @param request 게시글 생성 요청
      * @return 생성된 게시글 ID
      */
-    Long createBoard(BoardCreateRequest request);
+    Long createBoard(BoardCreateRequest request, String creator);
 }

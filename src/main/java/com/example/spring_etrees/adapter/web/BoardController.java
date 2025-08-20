@@ -1,5 +1,6 @@
 package com.example.spring_etrees.adapter.web;
 
+import com.example.spring_etrees.adapter.security.LoginUser;
 import com.example.spring_etrees.application.board.provided.BoardCreator;
 import com.example.spring_etrees.application.board.provided.BoardFinder;
 import com.example.spring_etrees.application.board.provided.BoardModifier;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -82,13 +84,17 @@ public class BoardController {
      * 게시글 작성 폼 페이지
      */
     @GetMapping("/write")
-    public String boardWriteForm(Model model) {
+    public String boardWriteForm(@AuthenticationPrincipal LoginUser loginUser, Model model) {
         // 메뉴 코드 목록 조회
         List<ComCode> menuCodes = comCodeService.getMenuCodes();
-        
+
+        // 현재 로그인한 사용자 정보 가져오기
+        String currentUser = loginUser.getMember().getName(); // 또는 getUsername()
+
         // 빈 DTO 객체를 모델에 추가 (Thymeleaf 폼 바인딩용)
         model.addAttribute("boardCreateRequest", new BoardCreateRequest(null, "", ""));
         model.addAttribute("menuCodes", menuCodes);
+        model.addAttribute("currentUser", currentUser); // 현재 사용자 정보 추가
         return "board/write";
     }
 
@@ -96,18 +102,22 @@ public class BoardController {
      * 게시글 작성 처리
      */
     @PostMapping("/write")
-    public String create(@Valid @ModelAttribute BoardCreateRequest request) {
-        Long boardNum = boardCreator.createBoard(request);
+    public String create(@Valid @ModelAttribute BoardCreateRequest request,
+                         @AuthenticationPrincipal LoginUser loginUser) {
+        String creator = loginUser.getMember().getName(); // 로그인한 사용자의 username
+        Long boardNum = boardCreator.createBoard(request, creator);
         return "redirect:/board/view/" + boardNum;
     }
 
     /**
      * 게시글 수정 처리
-     * */
+     */
     @PostMapping("/edit/{boardNum}")
     public String update(@PathVariable Long boardNum,
-                         @Valid @ModelAttribute BoardUpdateRequest request) {
-        boardModifier.updateBoard(boardNum, request);
+                         @Valid @ModelAttribute BoardUpdateRequest request,
+                         @AuthenticationPrincipal LoginUser loginUser) {
+        String modifier = loginUser.getMember().getName(); // 로그인한 사용자의 username
+        boardModifier.updateBoard(boardNum, request, modifier);
         return "redirect:/board/view/" + boardNum;
     }
 
@@ -115,8 +125,11 @@ public class BoardController {
      * 게시글 수정 폼 페이지
      */
     @GetMapping("/edit/{boardNum}")
-    public String boardEditForm(@PathVariable Long boardNum, Model model) {
+    public String boardEditForm(@PathVariable Long boardNum,
+                                @AuthenticationPrincipal LoginUser loginUser,
+                                Model model) {
         Board board = boardFinder.getBoard(boardNum);
+        String currentUser = loginUser.getMember().getName(); // 또는 getUsername()
 
         // 기존 게시글 정보로 수정 요청 객체 생성
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(
@@ -126,7 +139,8 @@ public class BoardController {
 
         model.addAttribute("board", board);
         model.addAttribute("boardUpdateRequest", boardUpdateRequest);
-        return "board/edit";  // 수정 폼 템플릿
+        model.addAttribute("currentUser", currentUser); // 현재 사용자 정보 추가
+        return "board/edit";
     }
 
     /**

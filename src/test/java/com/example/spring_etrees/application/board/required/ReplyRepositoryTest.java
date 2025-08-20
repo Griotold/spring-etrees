@@ -68,11 +68,8 @@ class ReplyRepositoryTest {
     @Test
     void 다른게시글의_댓글은_삭제되지않는다() {
         // given - 두 개의 게시글 생성
-        BoardCreateRequest request1 = new BoardCreateRequest(BoardType.GENERAL, "첫 번째 게시글", "내용1");
-        BoardCreateRequest request2 = new BoardCreateRequest(BoardType.GENERAL, "두 번째 게시글", "내용2");
-
-        Board board1 = Board.create(request1);
-        Board board2 = Board.create(request2);
+        Board board1 = BoardFixture.createBoard();
+        Board board2 = BoardFixture.createBoard(BoardType.GENERAL, "두 번째 게시글", "내용2");
         Board savedBoard1 = boardRepository.save(board1);
         Board savedBoard2 = boardRepository.save(board2);
 

@@ -1,6 +1,7 @@
 package com.example.spring_etrees.adapter.security;
 
 import com.example.spring_etrees.domain.member.Member;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,8 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class LoginUser implements UserDetails {
 
     private final Member member;
 
@@ -47,10 +49,5 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    // Member 객체에 직접 접근할 수 있는 메서드
-    public Member getMember() {
-        return member;
     }
 }

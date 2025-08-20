@@ -48,20 +48,41 @@ public class BoardFixture {
      * 기본 Board 엔티티 생성
      */
     public static Board createBoard() {
-        return Board.create(createBoardCreateRequest());
+        return Board.create(createBoardCreateRequest(), "TEST_USER");
+    }
+
+    /**
+     * 생성자를 지정한 Board 엔티티 생성
+     */
+    public static Board createBoard(String creator) {
+        return Board.create(createBoardCreateRequest(), creator);
     }
 
     /**
      * 타입을 지정한 Board 엔티티 생성
      */
     public static Board createBoard(BoardType boardType) {
-        return Board.create(createBoardCreateRequest(boardType));
+        return Board.create(createBoardCreateRequest(boardType), "TEST_USER");
+    }
+
+    /**
+     * 타입과 생성자를 지정한 Board 엔티티 생성
+     */
+    public static Board createBoard(BoardType boardType, String creator) {
+        return Board.create(createBoardCreateRequest(boardType), creator);
     }
 
     /**
      * 모든 값을 지정한 Board 엔티티 생성
      */
     public static Board createBoard(BoardType boardType, String title, String content) {
-        return Board.create(createBoardCreateRequest(boardType, title, content));
+        return Board.create(createBoardCreateRequest(boardType, title, content), "TEST_USER");
+    }
+
+    /**
+     * 모든 값과 생성자를 지정한 Board 엔티티 생성
+     */
+    public static Board createBoard(BoardType boardType, String title, String content, String creator) {
+        return Board.create(createBoardCreateRequest(boardType, title, content), creator);
     }
 }
