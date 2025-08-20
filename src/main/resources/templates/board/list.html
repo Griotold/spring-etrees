@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,8 +48,17 @@
 
     <tr>
         <td align="right">
-            <a th:href="@{/login}">로그인</a> |
-            <a th:href="@{/join}">회원가입</a> |
+            <!-- 로그인 상태에 따른 조건부 메뉴 -->
+            <span sec:authorize="isAnonymous()">
+                <a th:href="@{/login}">로그인</a> |
+                <a th:href="@{/join}">회원가입</a> |
+            </span>
+            <span sec:authorize="isAuthenticated()">
+                <span sec:authentication="name"></span>님 환영합니다! |
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <input type="submit" value="로그아웃" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">
+                </form> |
+            </span>
             <a th:href="@{/board/write}">글쓰기</a>
         </td>
     </tr>

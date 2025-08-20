@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+</head>
+<body>
+<form th:action="@{/login}" method="post">
+    <table align="center">
+        <tr>
+            <td align="right">
+                <input type="submit" value="로그인">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <!-- 성공 메시지 표시 (회원가입 완료) -->
+                <div th:if="${successMessage}" style="color: green; text-align: center; margin-bottom: 10px;">
+                    <span th:text="${successMessage}"></span>
+                </div>
+
+                <!-- 에러 메시지 표시 (로그인 실패) -->
+                <div th:if="${errorMessage}" style="color: red; text-align: center; margin-bottom: 10px;">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+
+                <table border="1">
+                    <tr>
+                        <td width="120" align="center">
+                            아이디
+                        </td>
+                        <td width="400">
+                            <input type="text" name="username" size="20" placeholder="아이디를 입력하세요" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            비밀번호
+                        </td>
+                        <td>
+                            <input type="password" name="password" size="20" placeholder="비밀번호를 입력하세요" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <label>
+                                <input type="checkbox" name="remember-me"> 로그인 상태 유지
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <a th:href="@{/join}">회원가입</a> |
+                <a th:href="@{/board/list}">게시판</a>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+</head>
+<body>
+<form th:action="@{/join}" th:object="${memberCreateRequest}" method="post">
+    <table align="center">
+        <tr>
+            <td align="right">
+                <input type="submit" value="회원가입">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <!-- 에러 메시지 표시 -->
+                <div th:if="${errorMessage}" style="color: red; text-align: center; margin-bottom: 10px;">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+
+                <table border="1">
+                    <tr>
+                        <td width="120" align="center">
+                            아이디
+                        </td>
+                        <td width="400">
+                            <input th:field="*{username}" type="text" size="20" placeholder="4-20자 사이로 입력하세요">
+                            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            비밀번호
+                        </td>
+                        <td>
+                            <input th:field="*{password}" type="password" size="20" placeholder="6-20자 사이로 입력하세요">
+                            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            비밀번호 확인
+                        </td>
+                        <td>
+                            <input th:field="*{passwordCheck}" type="password" size="20" placeholder="비밀번호를 다시 입력하세요">
+                            <div th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            이름
+                        </td>
+                        <td>
+                            <input th:field="*{name}" type="text" size="20" placeholder="이름을 입력하세요">
+                            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            전화번호
+                        </td>
+                        <td>
+                            <input th:field="*{phone}" type="text" size="20" placeholder="010-1234-5678" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}">
+                            <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            우편번호
+                        </td>
+                        <td>
+                            <input th:field="*{postNo}" type="text" size="10" placeholder="12345">
+                            <div th:if="${#fields.hasErrors('postNo')}" th:errors="*{postNo}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            주소
+                        </td>
+                        <td>
+                            <input th:field="*{address}" type="text" size="50" placeholder="주소를 입력하세요">
+                            <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            회사
+                        </td>
+                        <td>
+                            <input th:field="*{company}" type="text" size="30" placeholder="회사명을 입력하세요">
+                            <div th:if="${#fields.hasErrors('company')}" th:errors="*{company}" style="color: red;"></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <a th:href="@{/login}">로그인</a> |
+                <a th:href="@{/board/list}">게시판</a>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
