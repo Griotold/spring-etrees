@@ -3,12 +3,14 @@ package com.example.spring_etrees.adapter.web;
 import com.example.spring_etrees.application.board.provided.BoardCreator;
 import com.example.spring_etrees.application.board.provided.BoardFinder;
 import com.example.spring_etrees.application.board.provided.BoardModifier;
+import com.example.spring_etrees.application.common.ComCodeService;
 import com.example.spring_etrees.application.reply.provided.ReplyCreator;
 import com.example.spring_etrees.application.reply.provided.ReplyFinder;
 import com.example.spring_etrees.application.reply.provided.ReplyModifier;
 import com.example.spring_etrees.domain.board.Board;
 import com.example.spring_etrees.domain.board.BoardCreateRequest;
 import com.example.spring_etrees.domain.board.BoardUpdateRequest;
+import com.example.spring_etrees.domain.comcode.ComCode;
 import com.example.spring_etrees.domain.reply.Reply;
 import com.example.spring_etrees.domain.reply.ReplyCreateRequest;
 import com.example.spring_etrees.domain.reply.ReplyUpdateRequest;
@@ -35,6 +37,7 @@ public class BoardController {
     private final ReplyCreator replyCreator;
     private final ReplyFinder replyFinder;
     private final ReplyModifier replyModifier;
+    private final ComCodeService comCodeService;
 
     /**
      * 게시글 목록 페이지
@@ -47,6 +50,9 @@ public class BoardController {
         Pageable pageable = PageRequest.of(pageNo - 1, 5);
         Page<Board> boardPage = boardFinder.getBoardList(type, pageable);
 
+        // 메뉴 코드 목록 추가
+        List<ComCode> menuCodes = comCodeService.getMenuCodes();
+
         model.addAttribute("boardList", boardPage.getContent());
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", boardPage.getTotalPages());
@@ -54,6 +60,7 @@ public class BoardController {
         model.addAttribute("hasNext", boardPage.hasNext());
         model.addAttribute("hasPrevious", boardPage.hasPrevious());
         model.addAttribute("selectedType", type); // 선택된 타입 전달
+        model.addAttribute("menuCodes", menuCodes); // 메뉴 코드 목록 추가
 
         return "board/list";
     }
@@ -76,8 +83,12 @@ public class BoardController {
      */
     @GetMapping("/write")
     public String boardWriteForm(Model model) {
+        // 메뉴 코드 목록 조회
+        List<ComCode> menuCodes = comCodeService.getMenuCodes();
+        
         // 빈 DTO 객체를 모델에 추가 (Thymeleaf 폼 바인딩용)
         model.addAttribute("boardCreateRequest", new BoardCreateRequest(null, "", ""));
+        model.addAttribute("menuCodes", menuCodes);
         return "board/write";
     }
 

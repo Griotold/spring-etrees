@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record BoardCreateRequest(
-        @NotNull(message = "게시판 타입을 선택해주세요")
+        @NotBlank(message = "게시판 타입을 선택해주세요")
         BoardType boardType,
 
         @NotBlank(message = "제목은 필수입니다")

@@ -6,6 +6,7 @@
     <title>게시글 목록</title>
 </head>
 <body>
+<body>
 <table align="center">
     <tr>
         <td align="right">
@@ -45,33 +46,62 @@
         </td>
     </tr>
 
-    <!-- 페이징 처리 -->
-    <tr>
-        <td align="center">
-            <!-- 이전 페이지 -->
-            <span th:if="${hasPrevious}">
-                    <a th:href="@{/board/list(pageNo=${currentPage - 1})}">이전</a>
-                </span>
-
-            <!-- 페이지 번호 -->
-            <span th:each="page : ${#numbers.sequence(1, totalPages)}" th:if="${totalPages > 0}">
-                    <span th:if="${page == currentPage}" th:text="${page}" style="font-weight: bold;"></span>
-                    <a th:if="${page != currentPage}" th:href="@{/board/list(pageNo=${page})}" th:text="${page}"></a>
-                    <span th:if="${!pageStat.last}"> | </span>
-                </span>
-
-            <!-- 다음 페이지 -->
-            <span th:if="${hasNext}">
-                    <a th:href="@{/board/list(pageNo=${currentPage + 1})}">다음</a>
-                </span>
-        </td>
-    </tr>
-
     <tr>
         <td align="right">
             <a th:href="@{/board/write}">글쓰기</a>
         </td>
     </tr>
+
+    <!-- 타입 선택 버튼들 (글쓰기 버튼 아래) -->
+    <tr>
+        <td align="center" style="padding: 10px;">
+            <a th:href="@{/board/list(type=all)}" 
+               th:class="${selectedType == 'all'} ? 'selected' : ''"
+               style="text-decoration: none; padding: 5px;">전체</a>
+            <span th:each="menu, iterStat : ${menuCodes}">
+                | <a th:href="@{/board/list(type=${menu.codeId == 'a01' ? 'GENERAL' : 
+                                                      menu.codeId == 'a02' ? 'QNA' : 
+                                                      menu.codeId == 'a03' ? 'ANONYMOUS' : 
+                                                      menu.codeId == 'a04' ? 'FREE' : 'GENERAL'})}" 
+                     th:text="${menu.codeName}"
+                     th:class="${selectedType == (menu.codeId == 'a01' ? 'GENERAL' : 
+                                                  menu.codeId == 'a02' ? 'QNA' : 
+                                                  menu.codeId == 'a03' ? 'ANONYMOUS' : 
+                                                  menu.codeId == 'a04' ? 'FREE' : 'GENERAL')} ? 'selected' : ''"
+                     style="text-decoration: none; padding: 5px;"></a>
+            </span>
+        </td>
+    </tr>
+
+    <!-- 페이징 처리 -->
+    <tr>
+        <td align="center">
+            <!-- 이전 페이지 -->
+            <span th:if="${hasPrevious}">
+                    <a th:href="@{/board/list(pageNo=${currentPage - 1}, type=${selectedType})}">이전</a>
+                </span>
+
+            <!-- 페이지 번호 -->
+            <span th:each="page : ${#numbers.sequence(1, totalPages)}" th:if="${totalPages > 0}">
+                    <span th:if="${page == currentPage}" th:text="${page}" style="font-weight: bold;"></span>
+                    <a th:if="${page != currentPage}" th:href="@{/board/list(pageNo=${page}, type=${selectedType})}" th:text="${page}"></a>
+                    <span th:if="${!pageStat.last}"> | </span>
+                </span>
+
+            <!-- 다음 페이지 -->
+            <span th:if="${hasNext}">
+                    <a th:href="@{/board/list(pageNo=${currentPage + 1}, type=${selectedType})}">다음</a>
+                </span>
+        </td>
+    </tr>
+
 </table>
+
+<style>
+.selected {
+    font-weight: bold;
+    color: #007bff;
+}
+</style>
 </body>
 </html>

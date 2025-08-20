@@ -53,7 +53,7 @@ public class Board {
     public static Board create(BoardCreateRequest request) {
         Board board = new Board();
 
-        board.boardType = requireNonNull(request.boardType());  // 기본 게시판 타입
+        board.boardType = request.boardType(); // 변환된 BoardType 사용
         board.boardTitle = requireNonNull(request.boardTitle());
         board.boardComment = requireNonNull(request.boardComment());
         board.creator = "SYSTEM";  // 현재는 고정값, 추후 로그인 기능 추가시 변경

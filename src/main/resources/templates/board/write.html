@@ -23,14 +23,12 @@
                         <td width="400">
                             <select th:field="*{boardType}">
                                 <option value="">-- 게시판 타입 선택 --</option>
-                                <option th:value="${T(com.example.spring_etrees.domain.board.BoardType).GENERAL}" 
-                                        th:text="${T(com.example.spring_etrees.domain.board.BoardType).GENERAL.description}">일반</option>
-                                <option th:value="${T(com.example.spring_etrees.domain.board.BoardType).QNA}" 
-                                        th:text="${T(com.example.spring_etrees.domain.board.BoardType).QNA.description}">Q&A</option>
-                                <option th:value="${T(com.example.spring_etrees.domain.board.BoardType).ANONYMOUS}" 
-                                        th:text="${T(com.example.spring_etrees.domain.board.BoardType).ANONYMOUS.description}">익명</option>
-                                <option th:value="${T(com.example.spring_etrees.domain.board.BoardType).FREE}" 
-                                        th:text="${T(com.example.spring_etrees.domain.board.BoardType).FREE.description}">자유</option>
+                                <option th:each="menu : ${menuCodes}" 
+                                        th:value="${menu.codeId == 'a01' ? 'GENERAL' : 
+                                                   menu.codeId == 'a02' ? 'QNA' : 
+                                                   menu.codeId == 'a03' ? 'ANONYMOUS' : 
+                                                   menu.codeId == 'a04' ? 'FREE' : 'GENERAL'}" 
+                                        th:text="${menu.codeName}">메뉴</option>
                             </select>
                             <div th:if="${#fields.hasErrors('boardType')}" th:errors="*{boardType}" style="color: red;"></div>
                         </td>
