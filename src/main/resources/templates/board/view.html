@@ -44,11 +44,14 @@
 
     <tr>
         <td align="right">
-            <a th:href="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}">Edit</a> |
-            <form th:action="@{/board/delete/{boardNum}(boardNum=${board.boardNum})}" method="post" style="display: inline;"
-                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                <input type="submit" value="Delete" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">
-            </form> |
+            <!-- 로그인한 사용자가 작성자와 같을 때만 수정/삭제 버튼 표시 -->
+            <span th:if="${currentUser != null and currentUser == board.creator}">
+                <a th:href="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}">Edit</a> |
+                <form th:action="@{/board/delete/{boardNum}(boardNum=${board.boardNum})}" method="post" style="display: inline;"
+                      onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    <input type="submit" value="Delete" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">
+                </form> |
+            </span>
             <a th:href="@{/board/list}">List</a>
         </td>
     </tr>
@@ -98,14 +101,17 @@
                                           th:text="${#temporals.format(reply.createTime, 'yyyy-MM-dd HH:mm')}">작성시간</span>
                                 </div>
                                 <div>
-                                    <a th:href="@{/board/view/{boardNum}/reply/{replyNum}/edit(boardNum=${board.boardNum},replyNum=${reply.replyNum})}" 
-                                       style="font-size: 12px;">수정</a> |
-                                    <form th:action="@{/board/view/{boardNum}/reply/{replyNum}/delete(boardNum=${board.boardNum},replyNum=${reply.replyNum})}" 
-                                          method="post" style="display: inline;" 
-                                          onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                                        <input type="submit" value="삭제" 
-                                               style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font-size: 12px;">
-                                    </form>
+                                    <!-- 로그인한 사용자가 댓글 작성자와 같을 때만 수정/삭제 버튼 표시 -->
+                                    <span th:if="${currentUser != null and currentUser == reply.creator}">
+                                        <a th:href="@{/board/view/{boardNum}/reply/{replyNum}/edit(boardNum=${board.boardNum},replyNum=${reply.replyNum})}" 
+                                           style="font-size: 12px;">수정</a> |
+                                        <form th:action="@{/board/view/{boardNum}/reply/{replyNum}/delete(boardNum=${board.boardNum},replyNum=${reply.replyNum})}" 
+                                              method="post" style="display: inline;" 
+                                              onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                            <input type="submit" value="삭제" 
+                                                   style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font-size: 12px;">
+                                        </form>
+                                    </span>
                                 </div>
                             </div>
                             <div th:text="${reply.replyContent}" style="white-space: pre-wrap;">댓글 내용</div>

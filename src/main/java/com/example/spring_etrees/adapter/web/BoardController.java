@@ -71,12 +71,17 @@ public class BoardController {
      * 게시글 상세 페이지
      */
     @GetMapping("/view/{boardNum}")
-    public String boardView(@PathVariable Long boardNum, Model model) {
+    public String boardView(@PathVariable Long boardNum,
+                            @AuthenticationPrincipal LoginUser loginUser,
+                            Model model) {
         Board board = boardFinder.getBoard(boardNum);
         List<Reply> replies = replyFinder.getRepliesByBoard(boardNum);
+        String currentUser = loginUser != null ? loginUser.getMember().getName() : null;
+
         model.addAttribute("board", board);
         model.addAttribute("replies", replies);
         model.addAttribute("replyCreateRequest", new ReplyCreateRequest(boardNum, ""));
+        model.addAttribute("currentUser", currentUser); // 현재 사용자 추가
         return "board/view";
     }
 
@@ -116,9 +121,14 @@ public class BoardController {
     public String update(@PathVariable Long boardNum,
                          @Valid @ModelAttribute BoardUpdateRequest request,
                          @AuthenticationPrincipal LoginUser loginUser) {
-        String modifier = loginUser.getMember().getName(); // 로그인한 사용자의 username
-        boardModifier.updateBoard(boardNum, request, modifier);
-        return "redirect:/board/view/" + boardNum;
+        try {
+            String modifier = loginUser.getMember().getName();
+            boardModifier.updateBoard(boardNum, request, modifier);
+            return "redirect:/board/view/" + boardNum;
+        } catch (IllegalArgumentException e) {
+            // 권한 없음 에러 처리
+            return "redirect:/board/view/" + boardNum + "?error=" + e.getMessage();
+        }
     }
 
     /**
@@ -147,9 +157,16 @@ public class BoardController {
      * 게시글 삭제 처리
      */
     @PostMapping("/delete/{boardNum}")
-    public String delete(@PathVariable Long boardNum) {
-        boardModifier.deleteBoard(boardNum);
-        return "redirect:/board/list";
+    public String delete(@PathVariable Long boardNum,
+                         @AuthenticationPrincipal LoginUser loginUser) {
+        try {
+            String requester = loginUser.getMember().getName();
+            boardModifier.deleteBoard(boardNum, requester);
+            return "redirect:/board/list";
+        } catch (IllegalArgumentException e) {
+            // 권한 없음 에러 처리
+            return "redirect:/board/view/" + boardNum + "?error=" + e.getMessage();
+        }
     }
 
     /**

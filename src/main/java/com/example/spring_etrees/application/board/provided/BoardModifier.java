@@ -15,5 +15,5 @@ public interface BoardModifier {
      * 게시글 삭제
      * @param boardNum 게시글 번호
      */
-    void deleteBoard(Long boardNum);
+    void deleteBoard(Long boardNum, String requester);
 }

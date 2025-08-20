@@ -62,19 +62,20 @@ class BoardModifierTest {
         // given
         Long boardNum = 1L;
         BoardUpdateRequest request = new BoardUpdateRequest("수정된 제목", "수정된 내용");
-        String modifier = "testModifier";
-        Board existingBoard = BoardFixture.createBoard("originalCreator");
+        String creator = "originalCreator";
+        String modifier = "originalCreator"; // 작성자와 동일한 사용자
+        Board existingBoard = BoardFixture.createBoard(creator);
         setField(existingBoard, "boardNum", boardNum);
 
         given(boardRepository.findById(boardNum)).willReturn(Optional.of(existingBoard));
 
-        // when - 인터페이스로 테스트 (modifier 파라미터 추가)
+        // when - 인터페이스로 테스트
         boardModifier.updateBoard(boardNum, request, modifier);
 
         // then
         assertThat(existingBoard.getBoardTitle()).isEqualTo("수정된 제목");
         assertThat(existingBoard.getBoardComment()).isEqualTo("수정된 내용");
-        assertThat(existingBoard.getModifier()).isEqualTo("testModifier"); // 변경된 값 검증
+        assertThat(existingBoard.getModifier()).isEqualTo("originalCreator"); // 작성자와 동일
 
         then(boardRepository).should().findById(boardNum);
         then(boardRepository).should().save(existingBoard);
@@ -125,33 +126,55 @@ class BoardModifierTest {
     void deleteBoard_성공() {
         // given
         Long boardNum = 1L;
-        Board existingBoard = BoardFixture.createBoard();
+        String requester = "testUser";
+        Board existingBoard = BoardFixture.createBoard(requester); // 같은 사용자로 생성
         setField(existingBoard, "boardNum", boardNum);
 
         given(boardRepository.findById(boardNum)).willReturn(Optional.of(existingBoard));
 
-        // when - 인터페이스로 테스트
-        boardModifier.deleteBoard(boardNum);
+        // when - 인터페이스로 테스트 (requester 파라미터 추가)
+        boardModifier.deleteBoard(boardNum, requester);
 
         // then
         then(boardRepository).should().findById(boardNum);
-        then(boardRepository).should().delete(existingBoard);
+        then(boardRepository).should().deleteById(boardNum); // delete → deleteById로 변경
     }
 
     @Test
     void deleteBoard_존재하지않는게시글_예외발생() {
         // given
         Long boardNum = 999L;
+        String requester = "testUser";
 
         given(boardRepository.findById(boardNum)).willReturn(Optional.empty());
 
-        // when & then - 인터페이스로 테스트
-        assertThatThrownBy(() -> boardModifier.deleteBoard(boardNum))
+        // when & then - 인터페이스로 테스트 (requester 파라미터 추가)
+        assertThatThrownBy(() -> boardModifier.deleteBoard(boardNum, requester))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 게시글이 존재하지 않습니다. id=" + boardNum);
 
         then(boardRepository).should().findById(boardNum);
-        then(boardRepository).should(never()).delete(any(Board.class));
+        then(boardRepository).should(never()).deleteById(any(Long.class)); // delete → deleteById로 변경
+    }
+
+    @Test
+    void deleteBoard_작성자가아님_예외발생() {
+        // given
+        Long boardNum = 1L;
+        String creator = "originalUser";
+        String requester = "anotherUser"; // 다른 사용자
+        Board existingBoard = BoardFixture.createBoard(creator);
+        setField(existingBoard, "boardNum", boardNum);
+
+        given(boardRepository.findById(boardNum)).willReturn(Optional.of(existingBoard));
+
+        // when & then
+        assertThatThrownBy(() -> boardModifier.deleteBoard(boardNum, requester))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("게시글 작성자만 수정/삭제할 수 있습니다.");
+
+        then(boardRepository).should().findById(boardNum);
+        then(boardRepository).should(never()).deleteById(any(Long.class));
     }
 
     // Reflection을 사용한 필드 설정 헬퍼 메서드
