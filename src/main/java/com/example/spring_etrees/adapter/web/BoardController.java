@@ -5,6 +5,7 @@ import com.example.spring_etrees.application.board.provided.BoardCreator;
 import com.example.spring_etrees.application.board.provided.BoardFinder;
 import com.example.spring_etrees.application.board.provided.BoardModifier;
 import com.example.spring_etrees.application.common.ComCodeService;
+import com.example.spring_etrees.application.file.provided.FileFinder;
 import com.example.spring_etrees.application.file.provided.FileModifier;
 import com.example.spring_etrees.application.reply.provided.ReplyCreator;
 import com.example.spring_etrees.application.reply.provided.ReplyFinder;
@@ -13,6 +14,7 @@ import com.example.spring_etrees.domain.board.Board;
 import com.example.spring_etrees.domain.board.BoardCreateRequest;
 import com.example.spring_etrees.domain.board.BoardUpdateRequest;
 import com.example.spring_etrees.domain.comcode.ComCode;
+import com.example.spring_etrees.domain.file.File;
 import com.example.spring_etrees.domain.reply.Reply;
 import com.example.spring_etrees.domain.reply.ReplyCreateRequest;
 import com.example.spring_etrees.domain.reply.ReplyUpdateRequest;
@@ -24,7 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,8 +44,7 @@ public class BoardController {
     private final ReplyModifier replyModifier;
     private final ComCodeService comCodeService;
     private final FileModifier fileModifier;
-    private final com.example.spring_etrees.application.file.required.FileRepository fileRepository;
-
+    private final FileFinder fileFinder;
     /**
      * 게시글 목록 페이지
      */
@@ -83,7 +83,7 @@ public class BoardController {
         String currentUser = loginUser != null ? loginUser.getMember().getName() : null;
 
         // 첨부파일 목록 조회 추가
-        List<com.example.spring_etrees.domain.file.File> files = fileRepository.findByBoard(board);
+        List<File> files = fileFinder.getFilesByBoard(board);
 
         model.addAttribute("board", board);
         model.addAttribute("replies", replies);

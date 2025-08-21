@@ -43,17 +43,38 @@
                         첨부파일
                     </td>
                     <td>
-                        <div th:each="file : ${files}">
-                            <a th:href="${file.fileUrl}" target="_blank" th:text="${file.originalFileName}">파일명</a>
-                            <span style="color: #888; font-size: 12px;" th:text="'(' + ${#numbers.formatDecimal(file.fileSize/1024, 0, 0)} + 'KB)'"></span>
-                            <br/>
-                            <!-- 이미지 파일인 경우 미리보기 -->
-                            <img th:if="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
-                                        ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
-                                        ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
-                                        ${#strings.toLowerCase(file.fileExtension)} == 'gif'"
-                                 th:src="${file.fileUrl}" 
-                                 style="max-width: 300px; max-height: 300px; margin: 5px 0;"/>
+                        <!-- 파일들을 가로로 배치 -->
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <div th:each="file : ${files}" style="flex: 0 0 auto; text-align: center;">
+                                <!-- 파일명과 크기 정보 -->
+                                <div style="margin-bottom: 5px;">
+                                    <a th:href="${file.fileUrl}" target="_blank" th:text="${file.originalFileName}" style="font-size: 14px;">파일명</a>
+                                    <br/>
+                                    <span style="color: #888; font-size: 12px;" th:text="'(' + ${#numbers.formatDecimal(file.fileSize/1024, 0, 0)} + 'KB)'"></span>
+                                </div>
+                                
+                                <!-- 이미지 파일인 경우 미리보기 표시 -->
+                                <div th:if="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
+                                            ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
+                                            ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
+                                            ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
+                                            ${#strings.toLowerCase(file.fileExtension)} == 'webp'" 
+                                     style="margin: 5px 0;">
+                                    <img th:src="${file.fileUrl}" 
+                                         th:alt="${file.originalFileName}"
+                                         style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;"/>
+                                </div>
+                                
+                                <!-- 이미지가 아닌 파일의 경우 -->
+                                <div th:unless="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
+                                                ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
+                                                ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
+                                                ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
+                                                ${#strings.toLowerCase(file.fileExtension)} == 'webp'" 
+                                     style="color: #666; font-size: 14px; margin: 5px 0; padding: 20px; border: 1px solid #ddd; border-radius: 4px;">
+                                    📎 첨부파일
+                                </div>
+                            </div>
                         </div>
                     </td>
                 </tr>
