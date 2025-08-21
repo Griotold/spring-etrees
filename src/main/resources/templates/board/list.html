@@ -38,8 +38,11 @@
                     <td width="40" align="center">
                         No
                     </td>
-                    <td width="300" align="center">
+                    <td width="250" align="center">
                         Title
+                    </td>
+                    <td width="80" align="center">
+                        Writer
                     </td>
                     <td width="120" align="center">
                         Created
@@ -53,6 +56,8 @@
                     <td>
                         <a th:href="@{/board/view/{boardNum}(boardNum=${board.boardNum})}"
                            th:text="${board.boardTitle}"></a>
+                    </td>
+                    <td align="center" th:text="${board.creator}">
                     </td>
                     <td align="center" th:text="${#temporals.format(board.createTime, 'MM-dd HH:mm')}">
                     </td>
