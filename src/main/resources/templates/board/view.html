@@ -38,6 +38,25 @@
                     <td th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}">
                     </td>
                 </tr>
+                <tr th:if="${files != null and !files.isEmpty()}">
+                    <td align="center">
+                        첨부파일
+                    </td>
+                    <td>
+                        <div th:each="file : ${files}">
+                            <a th:href="${file.fileUrl}" target="_blank" th:text="${file.originalFileName}">파일명</a>
+                            <span style="color: #888; font-size: 12px;" th:text="'(' + ${#numbers.formatDecimal(file.fileSize/1024, 0, 0)} + 'KB)'"></span>
+                            <br/>
+                            <!-- 이미지 파일인 경우 미리보기 -->
+                            <img th:if="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
+                                        ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
+                                        ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
+                                        ${#strings.toLowerCase(file.fileExtension)} == 'gif'"
+                                 th:src="${file.fileUrl}" 
+                                 style="max-width: 300px; max-height: 300px; margin: 5px 0;"/>
+                        </div>
+                    </td>
+                </tr>
             </table>
         </td>
     </tr>

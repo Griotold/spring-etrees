@@ -18,14 +18,12 @@ public class BoardModifyService implements BoardCreator, BoardModifier {
     private final BoardRepository boardRepository;
 
     @Override
-    public Long createBoard(BoardCreateRequest request, String creator) {
+    public Board createBoard(BoardCreateRequest request, String creator) {
         // 도메인 메서드 사용하여 게시글 생성
         Board board = Board.create(request, creator);
 
-        // 저장 후 생성된 ID 반환
-        Board savedBoard = boardRepository.save(board);
-
-        return savedBoard.getBoardNum();
+        // 저장 후 엔티티 반환
+        return boardRepository.save(board);
     }
 
     @Override

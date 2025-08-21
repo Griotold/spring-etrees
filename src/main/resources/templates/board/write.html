@@ -6,7 +6,7 @@
     <title>게시글 작성</title>
 </head>
 <body>
-<form th:action="@{/board/write}" th:object="${boardCreateRequest}" method="post">
+<form th:action="@{/board/write}" th:object="${boardCreateRequest}" method="post" enctype="multipart/form-data">
     <table align="center">
         <tr>
             <td align="right">
@@ -57,6 +57,15 @@
                         </td>
                         <td>
                             <span th:text="${currentUser}">작성자</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            파일첨부
+                        </td>
+                        <td>
+                            <input type="file" name="files" multiple accept="image/*">
+                            <br><small>* 이미지 파일만 업로드 가능합니다. (여러 파일 선택 가능)</small>
                         </td>
                     </tr>
                 </table>

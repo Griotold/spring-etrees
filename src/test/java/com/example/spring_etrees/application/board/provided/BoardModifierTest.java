@@ -50,10 +50,10 @@ class BoardModifierTest {
         given(boardRepository.save(any(Board.class))).willReturn(savedBoard);
 
         // when - 인터페이스로 테스트 (creator 파라미터 추가)
-        Long result = boardCreator.createBoard(request, creator);
+        Board result = boardCreator.createBoard(request, creator);
 
         // then
-        assertThat(result).isEqualTo(1L);
+        assertThat(result.getBoardNum()).isEqualTo(1L);
         then(boardRepository).should().save(any(Board.class));
     }
 

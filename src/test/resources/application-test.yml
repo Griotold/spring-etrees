@@ -21,9 +21,26 @@ spring:
     init:
       mode: never
 
+  # 파일 업로드 테스트 설정
+  servlet:
+    multipart:
+      max-file-size: 1MB       # 테스트용으로 작게 설정
+      max-request-size: 1MB
+
+  # AWS S3 테스트 설정 (Mock 또는 LocalStack용)
+  cloud:
+    aws:
+      access-key: test-access-key     # 테스트용 더미 값
+      secret-key: test-secret-key     # 테스트용 더미 값
+      bucket: test-bucket             # 테스트용 버킷명
+      region:
+        static: ap-northeast-2
+
+
 logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     com.momo.backend: DEBUG
     org.springframework.test: DEBUG
+    software.amazon.awssdk: DEBUG     # AWS SDK 로그 추가

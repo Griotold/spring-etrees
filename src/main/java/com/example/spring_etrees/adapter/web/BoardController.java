@@ -5,6 +5,7 @@ import com.example.spring_etrees.application.board.provided.BoardCreator;
 import com.example.spring_etrees.application.board.provided.BoardFinder;
 import com.example.spring_etrees.application.board.provided.BoardModifier;
 import com.example.spring_etrees.application.common.ComCodeService;
+import com.example.spring_etrees.application.file.provided.FileModifier;
 import com.example.spring_etrees.application.reply.provided.ReplyCreator;
 import com.example.spring_etrees.application.reply.provided.ReplyFinder;
 import com.example.spring_etrees.application.reply.provided.ReplyModifier;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,6 +42,8 @@ public class BoardController {
     private final ReplyFinder replyFinder;
     private final ReplyModifier replyModifier;
     private final ComCodeService comCodeService;
+    private final FileModifier fileModifier;
+    private final com.example.spring_etrees.application.file.required.FileRepository fileRepository;
 
     /**
      * 게시글 목록 페이지
@@ -78,10 +82,14 @@ public class BoardController {
         List<Reply> replies = replyFinder.getRepliesByBoard(boardNum);
         String currentUser = loginUser != null ? loginUser.getMember().getName() : null;
 
+        // 첨부파일 목록 조회 추가
+        List<com.example.spring_etrees.domain.file.File> files = fileRepository.findByBoard(board);
+
         model.addAttribute("board", board);
         model.addAttribute("replies", replies);
+        model.addAttribute("files", files); // 첨부파일 목록 추가
         model.addAttribute("replyCreateRequest", new ReplyCreateRequest(boardNum, ""));
-        model.addAttribute("currentUser", currentUser); // 현재 사용자 추가
+        model.addAttribute("currentUser", currentUser);
         return "board/view";
     }
 
@@ -103,15 +111,21 @@ public class BoardController {
         return "board/write";
     }
 
-    /**
-     * 게시글 작성 처리
-     */
     @PostMapping("/write")
     public String create(@Valid @ModelAttribute BoardCreateRequest request,
+                         @RequestParam(value = "files", required = false) List<MultipartFile> files,
                          @AuthenticationPrincipal LoginUser loginUser) {
-        String creator = loginUser.getMember().getName(); // 로그인한 사용자의 username
-        Long boardNum = boardCreator.createBoard(request, creator);
-        return "redirect:/board/view/" + boardNum;
+        String creator = loginUser.getMember().getName();
+
+        // 1. 게시글 생성 (Board 엔티티 반환)
+        Board board = boardCreator.createBoard(request, creator);
+
+        // 2. 파일 업로드 및 저장 (파일이 있는 경우만)
+        if (files != null && !files.isEmpty()) {
+            fileModifier.uploadAndSaveFiles(files, board);
+        }
+
+        return "redirect:/board/view/" + board.getBoardNum();
     }
 
     /**
