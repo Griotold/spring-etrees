@@ -22,23 +22,13 @@ public class BoardQueryService implements BoardFinder {
 
     @Override
     public Page<Board> getBoardListByTypes(List<String> types, Pageable pageable) {
-        // "all"이 포함되어 있거나 types가 비어있으면 전체 조회
-        if (types.contains("all") || types.isEmpty()) {
+        // 전체 조회 조건 체크
+        if (shouldReturnAllBoards(types)) {
             return boardRepository.findAllByOrderByBoardNumDesc(pageable);
         }
 
-        // String 타입을 BoardType enum으로 변환
-        List<BoardType> boardTypes = types.stream()
-                .map(type -> {
-                    try {
-                        return BoardType.valueOf(type);
-                    } catch (IllegalArgumentException e) {
-                        // 잘못된 타입은 무시
-                        return null;
-                    }
-                })
-                .filter(boardType -> boardType != null)
-                .collect(Collectors.toList());
+        // String 타입을 BoardType 으로 변환
+        List<BoardType> boardTypes = convertToBoardTypes(types);
 
         // 유효한 타입이 없으면 전체 조회
         if (boardTypes.isEmpty()) {
@@ -53,5 +43,25 @@ public class BoardQueryService implements BoardFinder {
     public Board getBoard(Long boardNum) {
         return boardRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardNum));
+    }
+
+    private boolean shouldReturnAllBoards(List<String> types) {
+        return types == null || types.isEmpty() || types.contains("all");
+    }
+
+    private List<BoardType> convertToBoardTypes(List<String> types) {
+        return types.stream()
+                .map(this::parseToBoardType)
+                .filter(boardType -> boardType != null)
+                .collect(Collectors.toList());
+    }
+
+    private BoardType parseToBoardType(String type) {
+        try {
+            return BoardType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            // 잘못된 타입은 무시
+            return null;
+        }
     }
 }
