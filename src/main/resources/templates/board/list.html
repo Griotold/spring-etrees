@@ -72,26 +72,18 @@
         </td>
     </tr>
 
-    <!-- 타입 선택 체크박스 (글쓰기 버튼 아래) -->
+    <!-- 타입 선택 체크박스 -->
     <tr>
         <td colspan="2" align="center" style="padding: 10px;">
             <form method="get" action="/board/list" style="display: inline;">
-                <label>
-                    <input type="checkbox" name="types" value="GENERAL" 
-                           th:checked="${selectedTypes != null and selectedTypes.contains('GENERAL')}"> 일반
-                </label>
-                <label style="margin-left: 15px;">
-                    <input type="checkbox" name="types" value="QNA" 
-                           th:checked="${selectedTypes != null and selectedTypes.contains('QNA')}"> Q&A
-                </label>
-                <label style="margin-left: 15px;">
-                    <input type="checkbox" name="types" value="ANONYMOUS" 
-                           th:checked="${selectedTypes != null and selectedTypes.contains('ANONYMOUS')}"> 익명
-                </label>
-                <label style="margin-left: 15px;">
-                    <input type="checkbox" name="types" value="FREE" 
-                           th:checked="${selectedTypes != null and selectedTypes.contains('FREE')}"> 자유
-                </label>
+                <span th:each="menu : ${menuCodes}">
+                    <label th:style="${menuStat.first} ? '' : 'margin-left: 15px;'">
+                        <input type="checkbox" name="types" 
+                               th:value="${menu.boardTypeValue}" 
+                               th:checked="${selectedTypes != null and selectedTypes.contains(menu.boardTypeValue)}">
+                        <span th:text="${menu.codeName}">메뉴명</span>
+                    </label>
+                </span>
                 <input type="hidden" name="pageNo" value="1">
                 <input type="submit" value="조회" style="margin-left: 15px; padding: 5px 10px;">
             </form>

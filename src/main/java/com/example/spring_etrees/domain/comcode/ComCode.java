@@ -1,5 +1,6 @@
 package com.example.spring_etrees.domain.comcode;
 
+import com.example.spring_etrees.domain.board.BoardType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,4 +39,24 @@ public class ComCode {
 
     @Column(name = "MODIFIED_TIME")
     private LocalDateTime modifiedTime;
+
+    /**
+     * CodeId를 BoardType으로 변환
+     */
+    public BoardType getBoardType() {
+        switch (this.codeId) {
+            case "a01": return BoardType.GENERAL;
+            case "a02": return BoardType.QNA;
+            case "a03": return BoardType.ANONYMOUS;
+            case "a04": return BoardType.FREE;
+            default: return BoardType.GENERAL;
+        }
+    }
+
+    /**
+     * BoardType의 String 값 반환 (체크박스 value용)
+     */
+    public String getBoardTypeValue() {
+        return getBoardType().name();
+    }
 }
