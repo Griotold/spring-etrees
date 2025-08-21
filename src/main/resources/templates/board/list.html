@@ -8,7 +8,22 @@
 <body>
 <body>
 <table align="center">
+    <!-- 상단 메뉴: 왼쪽에 로그인 상태별 버튼, 오른쪽에 total -->
     <tr>
+        <td align="left">
+            <!-- 로그인 전: login, join 버튼 -->
+            <span sec:authorize="isAnonymous()">
+                <a th:href="@{/login}">login</a>
+                <a th:href="@{/join}">join</a>
+            </span>
+            <!-- 로그인 후: 사용자명, logout 버튼 -->
+            <span sec:authorize="isAuthenticated()">
+                <span sec:authentication="name"></span>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <input type="submit" value="logout" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">
+                </form>
+            </span>
+        </td>
         <td align="right">
             total : <span th:text="${totalElements}"></span>
         </td>
@@ -47,25 +62,14 @@
     </tr>
 
     <tr>
-        <td align="right">
-            <!-- 로그인 상태에 따른 조건부 메뉴 -->
-            <span sec:authorize="isAnonymous()">
-                <a th:href="@{/login}">로그인</a> |
-                <a th:href="@{/join}">회원가입</a> |
-            </span>
-            <span sec:authorize="isAuthenticated()">
-                <span sec:authentication="name"></span>님 환영합니다! |
-                <form th:action="@{/logout}" method="post" style="display: inline;">
-                    <input type="submit" value="로그아웃" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">
-                </form> |
-            </span>
+        <td colspan="2" align="right">
             <a th:href="@{/board/write}">글쓰기</a>
         </td>
     </tr>
 
     <!-- 타입 선택 버튼들 (글쓰기 버튼 아래) -->
     <tr>
-        <td align="center" style="padding: 10px;">
+        <td colspan="2" align="center" style="padding: 10px;">
             <a th:href="@{/board/list(type=all)}" 
                th:class="${selectedType == 'all'} ? 'selected' : ''"
                style="text-decoration: none; padding: 5px;">전체</a>
@@ -86,7 +90,7 @@
 
     <!-- 페이징 처리 -->
     <tr>
-        <td align="center">
+        <td colspan="2" align="center">
             <!-- 이전 페이지 -->
             <span th:if="${hasPrevious}">
                     <a th:href="@{/board/list(pageNo=${currentPage - 1}, type=${selectedType})}">이전</a>

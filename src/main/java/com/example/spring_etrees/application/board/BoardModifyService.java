@@ -24,6 +24,7 @@ public class BoardModifyService implements BoardCreator, BoardModifier {
 
         // 저장 후 생성된 ID 반환
         Board savedBoard = boardRepository.save(board);
+
         return savedBoard.getBoardNum();
     }
 
