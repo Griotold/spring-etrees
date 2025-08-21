@@ -4,15 +4,17 @@ import com.example.spring_etrees.domain.board.Board;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface BoardFinder {
 
     /**
-     * 게시글 목록 조회 (타입별 필터링 지원)
-     * @param type 게시판 타입 ("all" 또는 BoardType name)
+     * 게시글 목록 조회 (여러 타입 지원)
+     * @param types 게시판 타입 목록
      * @param pageable 페이지 번호 (1부터 시작)
      * @return 게시글 목록 (5건씩)
      */
-    Page<Board> getBoardList(String type, Pageable pageable);
+    Page<Board> getBoardListByTypes(List<String> types, Pageable pageable);
 
     /**
      * 게시글 상세 조회

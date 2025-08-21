@@ -49,12 +49,17 @@ public class BoardController {
      * 게시글 목록 페이지
      */
     @GetMapping("/list")
-    public String boardList(@RequestParam(defaultValue = "all") String type,
+    public String boardList(@RequestParam(required = false) List<String> types,
                             @RequestParam(defaultValue = "1") int pageNo,
                             Model model) {
+        // 체크박스로 선택된 타입들이 없으면 전체 조회
+        if (types == null || types.isEmpty()) {
+            types = List.of("all");
+        }
+        
         // 페이지 번호는 1부터 시작하므로 -1 처리, 기본 5건씩 조회
         Pageable pageable = PageRequest.of(pageNo - 1, 5);
-        Page<Board> boardPage = boardFinder.getBoardList(type, pageable);
+        Page<Board> boardPage = boardFinder.getBoardListByTypes(types, pageable);
 
         // 메뉴 코드 목록 추가
         List<ComCode> menuCodes = comCodeService.getMenuCodes();
@@ -65,8 +70,8 @@ public class BoardController {
         model.addAttribute("totalElements", boardPage.getTotalElements());
         model.addAttribute("hasNext", boardPage.hasNext());
         model.addAttribute("hasPrevious", boardPage.hasPrevious());
-        model.addAttribute("selectedType", type); // 선택된 타입 전달
-        model.addAttribute("menuCodes", menuCodes); // 메뉴 코드 목록 추가
+        model.addAttribute("selectedTypes", types); // 선택된 타입들 전달
+        model.addAttribute("menuCodes", menuCodes);
 
         return "board/list";
     }
