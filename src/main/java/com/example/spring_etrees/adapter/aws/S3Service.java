@@ -1,6 +1,7 @@
 package com.example.spring_etrees.adapter.aws;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -16,7 +17,9 @@ import java.util.UUID;
 public class S3Service {
 
     private final S3Client s3Client;
-    private final S3Config s3Config;
+
+    @Value("${spring.cloud.aws.bucket}")
+    private String bucket;
 
     /**
      * 파일 업로드
@@ -26,7 +29,7 @@ public class S3Service {
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(s3Config.getBucket())
+                .bucket(bucket)
                 .key(fileName)
                 .contentType(file.getContentType())
                 .build();
@@ -36,7 +39,7 @@ public class S3Service {
 
         // S3 URL 반환
         return String.format("https://%s.s3.ap-northeast-2.amazonaws.com/%s",
-                s3Config.getBucket(), fileName);
+                bucket, fileName);
     }
 
     /**
@@ -44,7 +47,7 @@ public class S3Service {
      */
     public void deleteFile(String fileName) {
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(s3Config.getBucket())
+                .bucket(bucket)
                 .key(fileName)
                 .build();
 

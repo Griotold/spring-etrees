@@ -18,7 +18,6 @@ public class S3Config {
 
     private String accessKey;
     private String secretKey;
-    private String bucket;
 
     @Bean
     public S3Client s3Client() {
