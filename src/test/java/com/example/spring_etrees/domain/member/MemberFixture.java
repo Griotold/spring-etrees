@@ -16,6 +16,16 @@ public class MemberFixture {
         };
     }
 
+    public static MemberCreateRequest createRequest(String username, String password,
+                                                    String passwordCheck, String name) {
+        return new MemberCreateRequest(
+                username,
+                password,
+                passwordCheck,
+                name, null, null, null, null
+        );
+    }
+
     public static MemberCreateRequest createRequest(String username, String name) {
         return new MemberCreateRequest(
                 username,

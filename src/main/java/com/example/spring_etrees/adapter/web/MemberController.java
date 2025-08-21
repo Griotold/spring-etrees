@@ -1,6 +1,7 @@
 package com.example.spring_etrees.adapter.web;
 
 import com.example.spring_etrees.application.member.provided.MemberRegister;
+import com.example.spring_etrees.domain.member.Member;
 import com.example.spring_etrees.domain.member.MemberCreateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class MemberController {
 
         try {
             // 2. 회원가입 처리
-            Long memberId = memberRegister.registerMember(request);
+            Member member = memberRegister.registerMember(request);
 
             // 3. 성공 시 로그인 페이지로 리다이렉트
             return "redirect:/login?joined=true";

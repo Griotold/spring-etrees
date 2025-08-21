@@ -1,5 +1,6 @@
 package com.example.spring_etrees.application.member.provided;
 
+import com.example.spring_etrees.domain.member.Member;
 import com.example.spring_etrees.domain.member.MemberCreateRequest;
 
 public interface MemberRegister {
@@ -7,7 +8,7 @@ public interface MemberRegister {
     /**
      * 회원 가입
      * @param request 회원가입 요청
-     * @return 생성된 회원 ID
+     * @return 생성된 회원
      */
-    Long registerMember(MemberCreateRequest request);
+    Member registerMember(MemberCreateRequest request);
 }
