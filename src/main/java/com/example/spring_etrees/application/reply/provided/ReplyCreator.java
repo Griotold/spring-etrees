@@ -1,5 +1,6 @@
 package com.example.spring_etrees.application.reply.provided;
 
+import com.example.spring_etrees.domain.reply.Reply;
 import com.example.spring_etrees.domain.reply.ReplyCreateRequest;
 
 public interface ReplyCreator {
@@ -9,5 +10,5 @@ public interface ReplyCreator {
      * @param request 댓글 생성 요청
      * @return 생성된 댓글 번호
      */
-    Long createReply(ReplyCreateRequest request, String creator);
+    Reply createReply(ReplyCreateRequest request, String creator);
 }
