@@ -52,6 +52,27 @@ public class FileModifyService implements FileModifier {
         return savedFiles;
     }
 
+    // TODO: S3와 DB 트랜잭션 불일치 문제 해결 필요
+    // 문제: DB는 롤백되지만 S3 파일은 이미 삭제/업로드된 상태로 남을 수 있음
+    // 해결 방안 고려사항:
+    // 1. 보상 트랜잭션 패턴 (Saga Pattern)
+    // 2. 이벤트 기반 비동기 처리
+    // 3. 처리 순서 변경 (DB 먼저, S3 나중에)
+    // 4. 분산 트랜잭션 (2PC) - 성능상 비추천
+    // 5. 최종 일관성(Eventually Consistent) 접근
+    @Override
+    public void updateBoardFiles(Board board, List<Long> deleteFileIds, List<MultipartFile> newFiles) {
+        // 1. 삭제할 파일들 처리
+        if (deleteFileIds != null && !deleteFileIds.isEmpty()) {
+            deleteFiles(deleteFileIds);
+        }
+
+        // 2. 새 파일들 추가
+        if (newFiles != null && !newFiles.isEmpty()) {
+            uploadAndSaveFiles(newFiles, board);
+        }
+    }
+
     @Override
     public void deleteFile(Long fileId) {
         File file = fileRepository.findById(fileId)
@@ -63,6 +84,13 @@ public class FileModifyService implements FileModifier {
 
         // 2. DB에서 파일 삭제
         fileRepository.delete(file);
+    }
+
+    @Override
+    public void deleteFiles(List<Long> fileIds) {
+        for (Long fileId : fileIds) {
+            deleteFile(fileId); // 기존 메서드 재활용
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.spring_etrees.application.board.provided;
 
+import com.example.spring_etrees.domain.board.Board;
 import com.example.spring_etrees.domain.board.BoardUpdateRequest;
 
 public interface BoardModifier {
@@ -8,8 +9,10 @@ public interface BoardModifier {
      * 게시글 수정
      * @param boardNum 게시글 번호
      * @param request 게시글 수정 요청
+     * @param modifier 수정자
+     * @return 수정된 게시글
      */
-    void updateBoard(Long boardNum, BoardUpdateRequest request, String modifier);
+    Board updateBoard(Long boardNum, BoardUpdateRequest request, String modifier);
 
     /**
      * 게시글 삭제

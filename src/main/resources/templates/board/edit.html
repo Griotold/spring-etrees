@@ -6,7 +6,7 @@
     <title>게시글 수정</title>
 </head>
 <body>
-<form th:action="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}" th:object="${boardUpdateRequest}" method="post">
+<form th:action="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}" th:object="${boardUpdateRequest}" method="post" enctype="multipart/form-data">
     <table align="center">
         <tr>
             <td align="right">
@@ -46,6 +46,54 @@
                             Created
                         </td>
                         <td th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}">
+                        </td>
+                    </tr>
+                    <!-- 기존 첨부파일 관리 -->
+                    <tr th:if="${files != null and !files.isEmpty()}">
+                        <td align="center">
+                            기존 첨부파일
+                        </td>
+                        <td>
+                            <!-- 파일들을 가로로 배치 -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                                <div th:each="file : ${files}" style="flex: 0 0 auto; text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 4px; max-width: 250px;">
+                                    <!-- 파일명과 크기 정보 -->
+                                    <div style="margin-bottom: 5px;">
+                                        <strong th:text="${file.originalFileName}" style="font-size: 14px; display: block; word-break: break-all;">파일명</strong>
+                                        <span style="color: #888; font-size: 12px;" th:text="'(' + ${#numbers.formatDecimal(file.fileSize/1024, 0, 0)} + 'KB)'"></span>
+                                    </div>
+                                    
+                                    <!-- 이미지 미리보기 -->
+                                    <div th:if="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
+                                                ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
+                                                ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
+                                                ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
+                                                ${#strings.toLowerCase(file.fileExtension)} == 'webp'" 
+                                         style="margin: 5px 0;">
+                                        <img th:src="${file.fileUrl}" 
+                                             th:alt="${file.originalFileName}"
+                                             style="max-width: 200px; max-height: 200px; border: 1px solid #ccc; border-radius: 4px;"/>
+                                    </div>
+                                    
+                                    <!-- 삭제 체크박스 -->
+                                    <div style="margin-top: 8px;">
+                                        <label>
+                                            <input type="checkbox" name="deleteFileIds" th:value="${file.id}">
+                                            <span style="color: #d32f2f; font-size: 14px;">이 파일 삭제</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- 새 파일 추가 -->
+                    <tr>
+                        <td align="center">
+                            파일 추가
+                        </td>
+                        <td>
+                            <input type="file" name="newFiles" multiple accept="image/*">
+                            <br><small style="color: #666;">* 이미지 파일만 업로드 가능합니다. (여러 파일 선택 가능)</small>
                         </td>
                     </tr>
                 </table>

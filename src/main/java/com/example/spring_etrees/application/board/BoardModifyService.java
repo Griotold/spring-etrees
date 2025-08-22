@@ -27,7 +27,7 @@ public class BoardModifyService implements BoardCreator, BoardModifier {
     }
 
     @Override
-    public void updateBoard(Long boardNum, BoardUpdateRequest request, String modifier) {
+    public Board updateBoard(Long boardNum, BoardUpdateRequest request, String modifier) {
         // 게시글 조회
         Board board = boardRepository.findById(boardNum)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + boardNum));
@@ -39,7 +39,7 @@ public class BoardModifyService implements BoardCreator, BoardModifier {
         board.update(request, modifier);
 
         // 명시적 save 호출
-        boardRepository.save(board);
+        return boardRepository.save(board);
     }
 
     @Override

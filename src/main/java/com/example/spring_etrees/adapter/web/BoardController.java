@@ -138,11 +138,15 @@ public class BoardController {
      */
     @PostMapping("/edit/{boardNum}")
     public String update(@PathVariable Long boardNum,
+                         @RequestParam(value = "deleteFileIds", required = false) List<Long> deleteFileIds,
+                         @RequestParam(value = "newFiles", required = false) List<MultipartFile> newFiles,
                          @Valid @ModelAttribute BoardUpdateRequest request,
                          @AuthenticationPrincipal LoginUser loginUser) {
         try {
             String modifier = loginUser.getMember().getName();
-            boardModifier.updateBoard(boardNum, request, modifier);
+            Board board = boardModifier.updateBoard(boardNum, request, modifier);
+
+            fileModifier.updateBoardFiles(board, deleteFileIds, newFiles);
             return "redirect:/board/view/" + boardNum;
         } catch (IllegalArgumentException e) {
             // 권한 없음 에러 처리
@@ -158,7 +162,8 @@ public class BoardController {
                                 @AuthenticationPrincipal LoginUser loginUser,
                                 Model model) {
         Board board = boardFinder.getBoard(boardNum);
-        String currentUser = loginUser.getMember().getName(); // 또는 getUsername()
+        String currentUser = loginUser.getMember().getName();
+        List<File> files = fileFinder.getFilesByBoard(board);
 
         // 기존 게시글 정보로 수정 요청 객체 생성
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(
@@ -168,7 +173,8 @@ public class BoardController {
 
         model.addAttribute("board", board);
         model.addAttribute("boardUpdateRequest", boardUpdateRequest);
-        model.addAttribute("currentUser", currentUser); // 현재 사용자 정보 추가
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("files", files);
         return "board/edit";
     }
 
