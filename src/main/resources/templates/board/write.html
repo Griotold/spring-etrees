@@ -3,80 +3,742 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시글 작성</title>
+    <title>새 게시글 작성 - ForumSpace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 32px 0;
+        }
+
+        .write-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .write-header {
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .write-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .write-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .required::after {
+            content: " *";
+            color: #dc2626;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+            line-height: 1.6;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .author-details {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 2px;
+        }
+
+        .author-role {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* File Upload */
+        .file-upload-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: white;
+        }
+
+        .file-upload-area:hover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .upload-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .upload-button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-button:hover {
+            background: #059669;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .selected-files {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            color: #374151;
+        }
+
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            background: #10b981;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 32px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-outline:hover {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .draft-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Category Preview */
+        .category-preview {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .preview-general {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .preview-qna {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .preview-anonymous {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .preview-free {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .write-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .write-title {
+                font-size: 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .upload-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .upload-text {
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/board/write}" th:object="${boardCreateRequest}" method="post" enctype="multipart/form-data">
-    <table align="center">
-        <tr>
-            <td align="right">
-                <input type="submit" value="작성">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <table border="1">
-                    <tr>
-                        <td width="120" align="center">
-                            Type
-                        </td>
-                        <td width="400">
-                            <select th:field="*{boardType}">
-                                <option value="">-- 게시판 타입 선택 --</option>
-                                <option th:each="menu : ${menuCodes}" 
-                                        th:value="${menu.codeId == 'a01' ? 'GENERAL' : 
-                                                   menu.codeId == 'a02' ? 'QNA' : 
-                                                   menu.codeId == 'a03' ? 'ANONYMOUS' : 
-                                                   menu.codeId == 'a04' ? 'FREE' : 'GENERAL'}" 
-                                        th:text="${menu.codeName}">메뉴</option>
-                            </select>
-                            <div th:if="${#fields.hasErrors('boardType')}" th:errors="*{boardType}" style="color: red;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="120" align="center">
-                            Title
-                        </td>
-                        <td width="400">
-                            <input th:field="*{boardTitle}" type="text" size="50">
-                            <div th:if="${#fields.hasErrors('boardTitle')}" th:errors="*{boardTitle}" style="color: red;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td height="300" align="center">
-                            Comment
-                        </td>
-                        <td valign="top">
-                            <textarea th:field="*{boardComment}" rows="20" cols="55"></textarea>
-                            <div th:if="${#fields.hasErrors('boardComment')}" th:errors="*{boardComment}" style="color: red;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            Writer
-                        </td>
-                        <td>
-                            <span th:text="${currentUser}">작성자</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            파일첨부
-                        </td>
-                        <td>
-                            <input type="file" name="files" multiple accept="image/*">
-                            <br><small>* 이미지 파일만 업로드 가능합니다. (여러 파일 선택 가능)</small>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td align="right">
-                <a th:href="@{/board/list}">List</a>
-            </td>
-        </tr>
-    </table>
-</form>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/board/list" class="logo">
+                    <div class="logo-icon">F</div>
+                    ForumSpace
+                </a>
+                
+                <div class="header-actions">
+                    <a th:href="@{/board/list}" class="header-btn btn-secondary">
+                        📋 목록으로
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="write-card">
+                <div class="write-header">
+                    <h1 class="write-title">✏️ 새 게시글 작성</h1>
+                    <p class="write-subtitle">커뮤니티와 소중한 이야기를 공유해보세요. 모든 내용은 실시간으로 저장됩니다.</p>
+                </div>
+
+                <form th:action="@{/board/write}" 
+                      th:object="${boardCreateRequest}" 
+                      method="post" 
+                      enctype="multipart/form-data">
+
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">📝 기본 정보</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="boardType" class="form-label required">카테고리</label>
+                                <select id="boardType" 
+                                        th:field="*{boardType}" 
+                                        class="form-select"
+                                        onchange="updateCategoryPreview(this)"
+                                        required>
+                                    <option value="">카테고리를 선택하세요</option>
+                                    <option th:each="menu : ${menuCodes}" 
+                                            th:value="${menu.codeId == 'a01' ? 'GENERAL' : 
+                                                       menu.codeId == 'a02' ? 'QNA' : 
+                                                       menu.codeId == 'a03' ? 'ANONYMOUS' : 
+                                                       menu.codeId == 'a04' ? 'FREE' : 'GENERAL'}" 
+                                            th:text="${menu.codeName}">메뉴</option>
+                                </select>
+                                <span id="categoryPreview" class="category-preview" style="display: none;"></span>
+                                <div th:if="${#fields.hasErrors('boardType')}" 
+                                     th:errors="*{boardType}" 
+                                     class="error-message">
+                                    ⚠️ <span th:text="*{#fields.errors('boardType')}"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="currentUser" class="form-label">작성자</label>
+                                <div class="author-info">
+                                    <div class="author-avatar" th:text="${#strings.substring(currentUser, 0, 1)}">U</div>
+                                    <div class="author-details">
+                                        <div class="author-name" th:text="${currentUser}">작성자</div>
+                                        <div class="author-role">ForumSpace 멤버</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="boardTitle" class="form-label required">제목</label>
+                            <input type="text" 
+                                   id="boardTitle"
+                                   th:field="*{boardTitle}" 
+                                   class="form-input"
+                                   placeholder="게시글의 제목을 입력하세요"
+                                   required>
+                            <div th:if="${#fields.hasErrors('boardTitle')}" 
+                                 th:errors="*{boardTitle}" 
+                                 class="error-message">
+                                ⚠️ <span th:text="*{#fields.errors('boardTitle')}"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="boardComment" class="form-label required">내용</label>
+                            <textarea id="boardComment"
+                                      th:field="*{boardComment}" 
+                                      class="form-textarea"
+                                      placeholder="게시글의 내용을 자유롭게 작성해보세요.&#10;&#10;💡 팁: 
+- 명확하고 구체적인 내용으로 작성해주세요
+- 이미지나 파일을 첨부하여 더 풍부한 게시글을 만들어보세요
+- 다른 사용자들이 이해하기 쉽도록 작성해주세요"
+                                      required></textarea>
+                            <div th:if="${#fields.hasErrors('boardComment')}" 
+                                 th:errors="*{boardComment}" 
+                                 class="error-message">
+                                ⚠️ <span th:text="*{#fields.errors('boardComment')}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="form-section">
+                        <h2 class="section-title">📎 파일 첨부</h2>
+                        
+                        <div class="file-upload-section">
+                            <div class="file-upload-area" onclick="document.getElementById('files').click()">
+                                <div class="upload-icon">📁</div>
+                                <div class="upload-text">파일을 드래그하거나 클릭해서 업로드</div>
+                                <div class="upload-hint">이미지 파일만 업로드 가능합니다 (여러 파일 선택 가능)</div>
+                                <button type="button" class="upload-button" onclick="document.getElementById('files').click()">
+                                    파일 선택
+                                </button>
+                            </div>
+                            
+                            <input type="file" 
+                                   id="files"
+                                   name="files" 
+                                   class="file-input"
+                                   multiple 
+                                   accept="image/*"
+                                   onchange="updateFileList(this)">
+                            
+                            <div id="selectedFiles" class="selected-files" style="display: none;">
+                                <h4 style="margin-bottom: 8px; color: #374151;">선택된 파일:</h4>
+                                <div id="fileList"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <div class="draft-info">
+                            💾 자동 저장 기능으로 작성 중인 내용이 보호됩니다
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <a th:href="@{/board/list}" class="action-btn btn-outline">
+                                ❌ 취소
+                            </a>
+                            <button type="submit" class="action-btn btn-primary">
+                                🚀 게시글 작성
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 카테고리 미리보기 업데이트
+        function updateCategoryPreview(select) {
+            const preview = document.getElementById('categoryPreview');
+            const value = select.value;
+            
+            if (value) {
+                preview.style.display = 'inline-block';
+                preview.className = 'category-preview';
+                
+                switch(value) {
+                    case 'GENERAL':
+                        preview.classList.add('preview-general');
+                        preview.textContent = '일반';
+                        break;
+                    case 'QNA':
+                        preview.classList.add('preview-qna');
+                        preview.textContent = 'Q&A';
+                        break;
+                    case 'ANONYMOUS':
+                        preview.classList.add('preview-anonymous');
+                        preview.textContent = '익명';
+                        break;
+                    case 'FREE':
+                        preview.classList.add('preview-free');
+                        preview.textContent = '자유';
+                        break;
+                }
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        // 파일 목록 업데이트
+        function updateFileList(input) {
+            const selectedFiles = document.getElementById('selectedFiles');
+            const fileList = document.getElementById('fileList');
+            
+            if (input.files.length > 0) {
+                selectedFiles.style.display = 'block';
+                fileList.innerHTML = '';
+                
+                Array.from(input.files).forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <div class="file-icon">📷</div>
+                        <span>${file.name}</span>
+                        <span style="color: #64748b; font-size: 12px;">(${(file.size / 1024).toFixed(1)} KB)</span>
+                    `;
+                    fileList.appendChild(fileItem);
+                });
+            } else {
+                selectedFiles.style.display = 'none';
+            }
+        }
+
+        // 드래그 앤 드롭 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.querySelector('.file-upload-area');
+            const fileInput = document.getElementById('files');
+
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                fileInput.files = files;
+                updateFileList(fileInput);
+            });
+
+            // 폼 검증
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                const title = document.getElementById('boardTitle').value.trim();
+                const content = document.getElementById('boardComment').value.trim();
+                const category = document.getElementById('boardType').value;
+                
+                if (!title || !content || !category) {
+                    e.preventDefault();
+                    alert('모든 필수 항목을 입력해주세요.');
+                    return false;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
