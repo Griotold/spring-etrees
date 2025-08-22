@@ -96,8 +96,8 @@
         </td>
     </tr>
 
-    <!-- 댓글 입력 폼 -->
-    <tr>
+    <!-- 댓글 입력 폼 (로그인한 사용자만) -->
+    <tr th:if="${currentUser != null}">
         <td>
             <form th:action="@{/reply/{boardNum}(boardNum=${board.boardNum})}"
                   th:object="${replyCreateRequest}" method="post">
@@ -118,6 +118,17 @@
                     </tr>
                 </table>
             </form>
+        </td>
+    </tr>
+    
+    <!-- 로그인 안 한 사용자에게 안내 -->
+    <tr th:if="${currentUser == null}">
+        <td>
+            <div style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; text-align: center; background-color: #f9f9f9;">
+                <span style="color: #666;">댓글을 작성하려면 </span>
+                <a th:href="@{/login}" style="color: #007bff; text-decoration: none;">로그인</a>
+                <span style="color: #666;">이 필요합니다.</span>
+            </div>
         </td>
     </tr>
 

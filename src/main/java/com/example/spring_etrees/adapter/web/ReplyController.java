@@ -33,7 +33,8 @@ public class ReplyController {
     public String createReply(@PathVariable Long boardNum,
                               @Valid @ModelAttribute ReplyCreateRequest request,
                               @AuthenticationPrincipal LoginUser loginUser) {
-        replyCreator.createReply(request);
+        String creator = loginUser.getMember().getName();
+        replyCreator.createReply(request, creator);
         return "redirect:/board/view/" + boardNum;
     }
 

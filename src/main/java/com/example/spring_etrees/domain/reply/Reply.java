@@ -47,13 +47,13 @@ public class Reply {
     @Column(name = "MODIFIED_TIME")
     private LocalDateTime modifiedTime;
 
-    public static Reply create(Board board, String replyContent) {
+    public static Reply create(Board board, String replyContent, String creator) {
         Reply reply = new Reply();
 
         reply.board = board;
         reply.replyContent = replyContent;
-        reply.creator = "SYSTEM";
-        reply.modifier = "SYSTEM";
+        reply.creator = creator;
+        reply.modifier = creator;
 
         return reply;
     }

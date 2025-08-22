@@ -21,13 +21,13 @@ public class ReplyModifyService implements ReplyCreator, ReplyModifier {
     private final BoardRepository boardRepository;
 
     @Override
-    public Long createReply(ReplyCreateRequest request) {
+    public Long createReply(ReplyCreateRequest request, String creator) {
         // 게시글 조회
         Board board = boardRepository.findById(request.boardNum())
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + request.boardNum()));
 
         // 댓글 생성
-        Reply reply = Reply.create(board, request.replyContent());
+        Reply reply = Reply.create(board, request.replyContent(), creator);
 
         // 저장 후 생성된 ID 반환
         Reply savedReply = replyRepository.save(reply);

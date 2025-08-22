@@ -2,6 +2,7 @@ package com.example.spring_etrees.application.board.provided;
 
 import com.example.spring_etrees.application.board.BoardModifyService;
 import com.example.spring_etrees.application.board.required.BoardRepository;
+import com.example.spring_etrees.application.file.provided.FileModifier;
 import com.example.spring_etrees.domain.board.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ class BoardModifierTest {
 
     @Mock
     private BoardRepository boardRepository;
+
+    @Mock
+    private FileModifier fileModifier;
 
     @InjectMocks
     private BoardModifyService boardModifyService;
@@ -137,7 +141,8 @@ class BoardModifierTest {
 
         // then
         then(boardRepository).should().findById(boardNum);
-        then(boardRepository).should().deleteById(boardNum); // delete → deleteById로 변경
+        then(fileModifier).should().deleteAllFilesByBoard(existingBoard);
+        then(boardRepository).should().deleteById(boardNum);
     }
 
     @Test

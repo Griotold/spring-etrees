@@ -40,9 +40,9 @@ class ReplyRepositoryTest {
         em.clear();
 
         // given - 댓글 3개 생성
-        Reply reply1 = Reply.create(savedBoard, "첫 번째 댓글");
-        Reply reply2 = Reply.create(savedBoard, "두 번째 댓글");
-        Reply reply3 = Reply.create(savedBoard, "세 번째 댓글");
+        Reply reply1 = Reply.create(savedBoard, "첫 번째 댓글", "creator");
+        Reply reply2 = Reply.create(savedBoard, "두 번째 댓글", "creator");
+        Reply reply3 = Reply.create(savedBoard, "세 번째 댓글", "creator");
 
         replyRepository.save(reply1);
         replyRepository.save(reply2);
@@ -74,9 +74,9 @@ class ReplyRepositoryTest {
         Board savedBoard2 = boardRepository.save(board2);
 
         // given - 각각에 댓글 생성
-        Reply reply1 = Reply.create(savedBoard1, "첫 번째 게시글의 댓글");
-        Reply reply2 = Reply.create(savedBoard2, "두 번째 게시글의 댓글1");
-        Reply reply3 = Reply.create(savedBoard2, "두 번째 게시글의 댓글2");
+        Reply reply1 = Reply.create(savedBoard1, "첫 번째 게시글의 댓글", "creator");
+        Reply reply2 = Reply.create(savedBoard2, "두 번째 게시글의 댓글1", "creator");
+        Reply reply3 = Reply.create(savedBoard2, "두 번째 게시글의 댓글2", "creator");
 
         replyRepository.save(reply1);
         replyRepository.save(reply2);

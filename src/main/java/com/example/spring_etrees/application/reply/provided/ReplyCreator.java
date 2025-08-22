@@ -9,5 +9,5 @@ public interface ReplyCreator {
      * @param request 댓글 생성 요청
      * @return 생성된 댓글 번호
      */
-    Long createReply(ReplyCreateRequest request);
+    Long createReply(ReplyCreateRequest request, String creator);
 }

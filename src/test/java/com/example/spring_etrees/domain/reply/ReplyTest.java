@@ -11,19 +11,18 @@ class ReplyTest {
     @Test
     void create() {
         Board board = BoardFixture.createBoard();
+        String creator = "Leo";
+        Reply reply = Reply.create(board, "댓글 내용", creator);
 
-        Reply reply = Reply.create(board, "댓글 내용");
-
-        assertThat(reply.getCreator()).isEqualTo("SYSTEM");
-        assertThat(reply.getModifier()).isEqualTo("SYSTEM");
+        assertThat(reply.getCreator()).isEqualTo(creator);
+        assertThat(reply.getModifier()).isEqualTo(creator);
     }
 
     @Test
     void update() {
-
         Board board = BoardFixture.createBoard();
-
-        Reply reply = Reply.create(board, "댓글 내용");
+        String creator = "Leo";
+        Reply reply = Reply.create(board, "댓글 내용", creator);
 
         reply.update("수정된 댓글 내용");
 
