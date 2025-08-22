@@ -3,6 +3,7 @@ package com.example.spring_etrees.application.board;
 import com.example.spring_etrees.application.board.provided.BoardCreator;
 import com.example.spring_etrees.application.board.provided.BoardModifier;
 import com.example.spring_etrees.application.board.required.BoardRepository;
+import com.example.spring_etrees.application.file.provided.FileModifier;
 import com.example.spring_etrees.domain.board.Board;
 import com.example.spring_etrees.domain.board.BoardCreateRequest;
 import com.example.spring_etrees.domain.board.BoardUpdateRequest;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardModifyService implements BoardCreator, BoardModifier {
 
     private final BoardRepository boardRepository;
+    private final FileModifier fileModifier;
 
     @Override
     public Board createBoard(BoardCreateRequest request, String creator) {
@@ -50,6 +52,8 @@ public class BoardModifyService implements BoardCreator, BoardModifier {
 
         // 작성자 권한 검증
         validateBoardOwnership(board, requester);
+
+        fileModifier.deleteAllFilesByBoard(board);
 
         // 게시글 삭제
         boardRepository.deleteById(boardNum);
