@@ -9,7 +9,7 @@ public interface ReplyModifier {
      * @param replyNum 댓글 번호
      * @param request 댓글 수정 요청
      */
-    void updateReply(Long replyNum, ReplyUpdateRequest request);
+    void updateReply(Long replyNum, ReplyUpdateRequest request, String modifier);
 
     /**
      * 댓글 삭제

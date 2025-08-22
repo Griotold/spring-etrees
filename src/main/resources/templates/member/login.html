@@ -3,62 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인</title>
+    <title>Login - ForumSpace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
+
+        .login-form {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            accent-color: #10b981;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .login-button {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #10b981;
+        }
+
+        .footer-divider {
+            color: #d1d5db;
+            margin: 0 4px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .message.success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                border-radius: 16px;
+            }
+
+            .login-header {
+                padding: 30px 20px;
+            }
+
+            .login-form {
+                padding: 30px 20px;
+            }
+
+            .logo-text {
+                font-size: 24px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/login}" method="post">
-    <table align="center">
-        <tr>
-            <td align="right">
-                <input type="submit" value="로그인">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <!-- 성공 메시지 표시 (회원가입 완료) -->
-                <div th:if="${successMessage}" style="color: green; text-align: center; margin-bottom: 10px;">
-                    <span th:text="${successMessage}"></span>
+    <div class="floating-shapes">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <div class="logo-icon">F</div>
+                <div class="logo-text">ForumSpace</div>
+            </div>
+            <div class="login-subtitle">Welcome back! Please sign in to your account</div>
+        </div>
+
+        <div class="login-form">
+            <!-- 성공 메시지 표시 -->
+            <div th:if="${successMessage}" class="message success">
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <!-- 에러 메시지 표시 -->
+            <div th:if="${errorMessage}" class="message error">
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username" class="form-label">아이디</label>
+                    <input type="text" 
+                           id="username" 
+                           name="username" 
+                           class="form-input" 
+                           placeholder="아이디를 입력하세요" 
+                           required>
                 </div>
 
-                <!-- 에러 메시지 표시 (로그인 실패) -->
-                <div th:if="${errorMessage}" style="color: red; text-align: center; margin-bottom: 10px;">
-                    <span th:text="${errorMessage}"></span>
+                <div class="form-group">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           class="form-input" 
+                           placeholder="비밀번호를 입력하세요" 
+                           required>
                 </div>
 
-                <table border="1">
-                    <tr>
-                        <td width="120" align="center">
-                            아이디
-                        </td>
-                        <td width="400">
-                            <input type="text" name="username" size="20" placeholder="아이디를 입력하세요" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            비밀번호
-                        </td>
-                        <td>
-                            <input type="password" name="password" size="20" placeholder="비밀번호를 입력하세요" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="center">
-                            <label>
-                                <input type="checkbox" name="remember-me"> 로그인 상태 유지
-                            </label>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td align="right">
-                <a th:href="@{/join}">회원가입</a> |
-                <a th:href="@{/board/list}">게시판</a>
-            </td>
-        </tr>
-    </table>
-</form>
+                <div class="checkbox-group">
+                    <input type="checkbox" 
+                           id="remember-me" 
+                           name="remember-me" 
+                           class="checkbox-input">
+                    <label for="remember-me" class="checkbox-label">로그인 상태 유지</label>
+                </div>
+
+                <button type="submit" class="login-button">
+                    로그인
+                </button>
+            </form>
+
+            <div class="form-footer">
+                <div class="footer-links">
+                    <a th:href="@{/join}" class="footer-link">회원가입</a>
+                    <span class="footer-divider">|</span>
+                    <a th:href="@{/board/list}" class="footer-link">게시판 보기</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

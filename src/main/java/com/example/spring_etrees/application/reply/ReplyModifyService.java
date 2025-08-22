@@ -35,13 +35,13 @@ public class ReplyModifyService implements ReplyCreator, ReplyModifier {
     }
 
     @Override
-    public void updateReply(Long replyNum, ReplyUpdateRequest request) {
+    public void updateReply(Long replyNum, ReplyUpdateRequest request, String modifier) {
         // 댓글 조회
         Reply reply = replyRepository.findById(replyNum)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다. id=" + replyNum));
 
         // 도메인 메서드로 수정
-        reply.update(request.replyContent());
+        reply.update(request.replyContent(), modifier);
 
         // 명시적 save 호출
         replyRepository.save(reply);

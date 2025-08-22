@@ -58,8 +58,8 @@ public class Reply {
         return reply;
     }
 
-    public void update(String replyContent) {
+    public void update(String replyContent, String modifier) {
         this.replyContent = replyContent;
-        this.modifier = "SYSTEM";
+        this.modifier = modifier;
     }
 }

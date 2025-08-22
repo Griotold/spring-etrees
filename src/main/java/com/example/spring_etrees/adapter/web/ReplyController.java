@@ -67,8 +67,9 @@ public class ReplyController {
                               @AuthenticationPrincipal LoginUser loginUser) {
         Reply reply = replyFinder.getReply(replyNum);
         Long boardNum = reply.getBoard().getBoardNum();
+        String modifier = loginUser.getMember().getName();
 
-        replyModifier.updateReply(replyNum, request);
+        replyModifier.updateReply(replyNum, request, modifier);
         return "redirect:/board/view/" + boardNum;
     }
 
