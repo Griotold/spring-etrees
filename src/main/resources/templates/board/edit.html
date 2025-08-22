@@ -3,109 +3,686 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시글 수정</title>
+    <title>게시글 수정 - ForumSpace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 32px 0;
+        }
+
+        .edit-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-header {
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .edit-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .edit-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .required::after {
+            content: " *";
+            color: #dc2626;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+            line-height: 1.6;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meta-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            color: #374151;
+        }
+
+        /* File Management */
+        .file-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .existing-files {
+            margin-bottom: 24px;
+        }
+
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .file-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .file-item:hover {
+            border-color: #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .file-item.to-delete {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .file-preview {
+            width: 100%;
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            background: #10b981;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px auto;
+            font-size: 20px;
+        }
+
+        .file-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .delete-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px;
+            background: #fee2e2;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .delete-checkbox:hover {
+            background: #fecaca;
+        }
+
+        .delete-checkbox input {
+            width: 16px;
+            height: 16px;
+            accent-color: #dc2626;
+        }
+
+        .delete-checkbox label {
+            font-size: 12px;
+            color: #991b1b;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            font-size: 20px;
+            color: white;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 32px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-outline:hover {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .edit-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .edit-title {
+                font-size: 24px;
+            }
+
+            .meta-info {
+                grid-template-columns: 1fr;
+            }
+
+            .file-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}" th:object="${boardUpdateRequest}" method="post" enctype="multipart/form-data">
-    <table align="center">
-        <tr>
-            <td align="right">
-                <input type="submit" value="수정">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <table border="1">
-                    <tr>
-                        <td width="120" align="center">
-                            Title
-                        </td>
-                        <td width="400">
-                            <input th:field="*{boardTitle}" type="text" size="50">
-                            <div th:if="${#fields.hasErrors('boardTitle')}" th:errors="*{boardTitle}" style="color: red;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td height="300" align="center">
-                            Comment
-                        </td>
-                        <td valign="top">
-                            <textarea th:field="*{boardComment}" rows="20" cols="55"></textarea>
-                            <div th:if="${#fields.hasErrors('boardComment')}" th:errors="*{boardComment}" style="color: red;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            Writer
-                        </td>
-                        <td th:text="${board.creator}">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            Created
-                        </td>
-                        <td th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}">
-                        </td>
-                    </tr>
-                    <!-- 기존 첨부파일 관리 -->
-                    <tr th:if="${files != null and !files.isEmpty()}">
-                        <td align="center">
-                            기존 첨부파일
-                        </td>
-                        <td>
-                            <!-- 파일들을 가로로 배치 -->
-                            <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-                                <div th:each="file : ${files}" style="flex: 0 0 auto; text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 4px; max-width: 250px;">
-                                    <!-- 파일명과 크기 정보 -->
-                                    <div style="margin-bottom: 5px;">
-                                        <strong th:text="${file.originalFileName}" style="font-size: 14px; display: block; word-break: break-all;">파일명</strong>
-                                        <span style="color: #888; font-size: 12px;" th:text="'(' + ${#numbers.formatDecimal(file.fileSize/1024, 0, 0)} + 'KB)'"></span>
-                                    </div>
-                                    
-                                    <!-- 이미지 미리보기 -->
-                                    <div th:if="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
-                                                ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
-                                                ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
-                                                ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
-                                                ${#strings.toLowerCase(file.fileExtension)} == 'webp'" 
-                                         style="margin: 5px 0;">
-                                        <img th:src="${file.fileUrl}" 
-                                             th:alt="${file.originalFileName}"
-                                             style="max-width: 200px; max-height: 200px; border: 1px solid #ccc; border-radius: 4px;"/>
-                                    </div>
-                                    
-                                    <!-- 삭제 체크박스 -->
-                                    <div style="margin-top: 8px;">
-                                        <label>
-                                            <input type="checkbox" name="deleteFileIds" th:value="${file.id}">
-                                            <span style="color: #d32f2f; font-size: 14px;">이 파일 삭제</span>
-                                        </label>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/board/list" class="logo">
+                    <div class="logo-icon">F</div>
+                    ForumSpace
+                </a>
+                
+                <div class="header-actions">
+                    <a th:href="@{/board/view/{boardNum}(boardNum=${board.boardNum})}" class="header-btn btn-secondary">
+                        👁️ 미리보기
+                    </a>
+                    <a th:href="@{/board/list}" class="header-btn btn-secondary">
+                        📋 목록으로
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="edit-card">
+                <div class="edit-header">
+                    <h1 class="edit-title">✏️ 게시글 수정</h1>
+                    <p class="edit-subtitle">게시글의 내용을 수정할 수 있습니다. 변경사항은 저장 후 적용됩니다.</p>
+                </div>
+
+                <form th:action="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}" 
+                      th:object="${boardUpdateRequest}" 
+                      method="post" 
+                      enctype="multipart/form-data">
+
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">📝 기본 정보</h2>
+                        
+                        <div class="form-group">
+                            <label for="boardTitle" class="form-label required">제목</label>
+                            <input type="text" 
+                                   id="boardTitle"
+                                   th:field="*{boardTitle}" 
+                                   class="form-input"
+                                   placeholder="게시글 제목을 입력하세요"
+                                   required>
+                            <div th:if="${#fields.hasErrors('boardTitle')}" 
+                                 th:errors="*{boardTitle}" 
+                                 class="error-message">
+                                ⚠️ <span th:text="*{#fields.errors('boardTitle')}"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="boardComment" class="form-label required">내용</label>
+                            <textarea id="boardComment"
+                                      th:field="*{boardComment}" 
+                                      class="form-textarea"
+                                      placeholder="게시글 내용을 입력하세요..."
+                                      required></textarea>
+                            <div th:if="${#fields.hasErrors('boardComment')}" 
+                                 th:errors="*{boardComment}" 
+                                 class="error-message">
+                                ⚠️ <span th:text="*{#fields.errors('boardComment')}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Meta Information -->
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <span class="meta-label">작성자</span>
+                                <span class="meta-value" th:text="${board.creator}">작성자</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">작성일시</span>
+                                <span class="meta-value" th:text="${#temporals.format(board.createTime, 'yyyy년 MM월 dd일 HH:mm')}">작성일시</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Management -->
+                    <div class="form-section">
+                        <h2 class="section-title">📎 첨부파일 관리</h2>
+                        
+                        <div class="file-section">
+                            <!-- Existing Files -->
+                            <div th:if="${files != null and !files.isEmpty()}" class="existing-files">
+                                <h3 class="section-title" style="font-size: 16px; margin-bottom: 16px;">
+                                    🗂️ 기존 파일 (<span th:text="${#lists.size(files)}">0</span>개)
+                                </h3>
+                                
+                                <div class="file-grid">
+                                    <div th:each="file : ${files}" class="file-item">
+                                        <!-- 이미지 파일인 경우 -->
+                                        <div th:if="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
+                                                    ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
+                                                    ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
+                                                    ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
+                                                    ${#strings.toLowerCase(file.fileExtension)} == 'webp'">
+                                            <img th:src="${file.fileUrl}" 
+                                                 th:alt="${file.originalFileName}"
+                                                 class="file-preview"/>
+                                        </div>
+                                        
+                                        <!-- 이미지가 아닌 파일의 경우 -->
+                                        <div th:unless="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
+                                                        ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
+                                                        ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
+                                                        ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
+                                                        ${#strings.toLowerCase(file.fileExtension)} == 'webp'">
+                                            <div class="file-icon">📄</div>
+                                        </div>
+                                        
+                                        <div class="file-name" th:text="${file.originalFileName}">파일명</div>
+                                        <div class="file-size" th:text="${#numbers.formatDecimal(file.fileSize/1024, 0, 0)} + 'KB'">파일크기</div>
+                                        
+                                        <div class="delete-checkbox">
+                                            <input type="checkbox" 
+                                                   th:id="|delete-${file.id}|"
+                                                   name="deleteFileIds" 
+                                                   th:value="${file.id}"
+                                                   onchange="toggleFileDelete(this)">
+                                            <label th:for="|delete-${file.id}|">🗑️ 삭제</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </td>
-                    </tr>
-                    <!-- 새 파일 추가 -->
-                    <tr>
-                        <td align="center">
-                            파일 추가
-                        </td>
-                        <td>
-                            <input type="file" name="newFiles" multiple accept="image/*">
-                            <br><small style="color: #666;">* 이미지 파일만 업로드 가능합니다. (여러 파일 선택 가능)</small>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td align="right">
-                <a th:href="@{/board/view/{boardNum}(boardNum=${board.boardNum})}">Cancel</a> |
-                <a th:href="@{/board/list}">List</a>
-            </td>
-        </tr>
-    </table>
-</form>
+
+                            <!-- New File Upload -->
+                            <div>
+                                <h3 class="section-title" style="font-size: 16px; margin-bottom: 16px;">
+                                    📤 새 파일 추가
+                                </h3>
+                                
+                                <div class="file-upload-area" onclick="document.getElementById('newFiles').click()">
+                                    <div class="upload-icon">📁</div>
+                                    <div class="upload-text">클릭하여 파일 선택</div>
+                                    <div class="upload-hint">이미지 파일만 업로드 가능합니다 (여러 파일 선택 가능)</div>
+                                </div>
+                                
+                                <input type="file" 
+                                       id="newFiles"
+                                       name="newFiles" 
+                                       class="file-input"
+                                       multiple 
+                                       accept="image/*"
+                                       onchange="updateFileUploadText(this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <div class="action-buttons">
+                            <a th:href="@{/board/view/{boardNum}(boardNum=${board.boardNum})}" 
+                               class="action-btn btn-outline">
+                                ❌ 취소
+                            </a>
+                            <button type="submit" class="action-btn btn-primary">
+                                💾 수정 완료
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 파일 삭제 체크박스 토글
+        function toggleFileDelete(checkbox) {
+            const fileItem = checkbox.closest('.file-item');
+            if (checkbox.checked) {
+                fileItem.classList.add('to-delete');
+            } else {
+                fileItem.classList.remove('to-delete');
+            }
+        }
+
+        // 파일 업로드 텍스트 업데이트
+        function updateFileUploadText(input) {
+            const uploadArea = input.previousElementSibling;
+            const uploadText = uploadArea.querySelector('.upload-text');
+            const uploadHint = uploadArea.querySelector('.upload-hint');
+            
+            if (input.files.length > 0) {
+                uploadText.textContent = `${input.files.length}개 파일 선택됨`;
+                uploadHint.textContent = Array.from(input.files).map(f => f.name).join(', ');
+            } else {
+                uploadText.textContent = '클릭하여 파일 선택';
+                uploadHint.textContent = '이미지 파일만 업로드 가능합니다 (여러 파일 선택 가능)';
+            }
+        }
+
+        // 드래그 앤 드롭 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.querySelector('.file-upload-area');
+            const fileInput = document.getElementById('newFiles');
+
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                fileInput.files = files;
+                updateFileUploadText(fileInput);
+            });
+        });
+    </script>
 </body>
 </html>

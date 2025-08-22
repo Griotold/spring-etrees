@@ -3,180 +3,760 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시글 상세</title>
+    <title th:text="${board.boardTitle} + ' - ForumSpace'">게시글 상세 - ForumSpace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .back-button {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #e2e8f0;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 32px 0;
+        }
+
+        /* Post Card */
+        .post-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-header {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .post-category {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .category-general {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .category-qna {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .category-anonymous {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .category-free {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .post-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .post-content {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #475569;
+            margin-bottom: 24px;
+            white-space: pre-wrap;
+        }
+
+        /* File Attachments */
+        .attachments {
+            margin-bottom: 24px;
+        }
+
+        .attachments-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .file-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .file-item:hover {
+            border-color: #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .file-preview {
+            width: 100%;
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            background: #10b981;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px auto;
+            font-size: 20px;
+        }
+
+        .file-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .file-name a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .file-name a:hover {
+            color: #10b981;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Action Buttons */
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .btn-danger:hover {
+            background: #fee2e2;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .comments-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Comment Form */
+        .comment-form {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .comment-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+
+        .comment-textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .comment-form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .login-notice {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .login-notice a {
+            color: #0ea5e9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-notice a:hover {
+            text-decoration: underline;
+        }
+
+        /* Comment List */
+        .comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .comment-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .comment-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .comment-action {
+            font-size: 12px;
+            color: #64748b;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .comment-action:hover {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        .comment-content {
+            color: #475569;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .comment-edit-form {
+            margin-top: 12px;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .edit-textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .edit-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .edit-btn {
+            border: none;
+            background: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn:hover {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+            padding: 40px 0;
+        }
+
+        /* Error Messages */
+        .error-message {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .post-card, .comments-section {
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .post-title {
+                font-size: 24px;
+            }
+
+            .post-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .post-actions {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+
+            .file-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<table align="center">
-    <tr>
-        <td>
-            <table border="1">
-                <tr>
-                    <td width="120" align="center">
-                        Title
-                    </td>
-                    <td width="400" th:text="${board.boardTitle}">
-                    </td>
-                </tr>
-                <tr>
-                    <td height="300" align="center">
-                        Comment
-                    </td>
-                    <td th:text="${board.boardComment}" style="white-space: pre-wrap;">
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        Writer
-                    </td>
-                    <td th:text="${board.creator}">
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        Created
-                    </td>
-                    <td th:text="${#temporals.format(board.createTime, 'yyyy-MM-dd HH:mm')}">
-                    </td>
-                </tr>
-                <tr th:if="${files != null and !files.isEmpty()}">
-                    <td align="center">
-                        첨부파일
-                    </td>
-                    <td>
-                        <!-- 파일들을 가로로 배치 -->
-                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                            <div th:each="file : ${files}" style="flex: 0 0 auto; text-align: center;">
-                                <!-- 파일명과 크기 정보 -->
-                                <div style="margin-bottom: 5px;">
-                                    <a th:href="${file.fileUrl}" target="_blank" th:text="${file.originalFileName}" style="font-size: 14px;">파일명</a>
-                                    <br/>
-                                    <span style="color: #888; font-size: 12px;" th:text="'(' + ${#numbers.formatDecimal(file.fileSize/1024, 0, 0)} + 'KB)'"></span>
-                                </div>
-                                
-                                <!-- 이미지 파일인 경우 미리보기 표시 -->
-                                <div th:if="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/board/list" class="logo">
+                    <div class="logo-icon">F</div>
+                    ForumSpace
+                </a>
+                
+                <a th:href="@{/board/list}" class="back-button">
+                    ← Back to List
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Post Card -->
+            <article class="post-card">
+                <div class="post-header">
+                    <span class="post-category"
+                          th:classappend="${board.boardType.name() == 'GENERAL' ? 'category-general' : 
+                                          (board.boardType.name() == 'QNA' ? 'category-qna' : 
+                                          (board.boardType.name() == 'ANONYMOUS' ? 'category-anonymous' : 'category-free'))}"
+                          th:text="${board.boardType.description}">Category</span>
+                    
+                    <h1 class="post-title" th:text="${board.boardTitle}">Post Title</h1>
+                    
+                    <div class="post-meta">
+                        <div class="meta-item">
+                            <span>👤</span>
+                            <span th:text="${board.creator}">Author</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>📅</span>
+                            <span th:text="${#temporals.format(board.createTime, 'yyyy년 MM월 dd일 HH:mm')}">Date</span>
+                        </div>
+                        <div class="meta-item" th:if="${board.modifiedTime != null}">
+                            <span>✏️</span>
+                            <span th:text="'수정됨 ' + ${#temporals.format(board.modifiedTime, 'yyyy년 MM월 dd일 HH:mm')}">Modified</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-content" th:text="${board.boardComment}">
+                    Post content goes here...
+                </div>
+
+                <!-- File Attachments -->
+                <div th:if="${files != null and !files.isEmpty()}" class="attachments">
+                    <div class="attachments-title">
+                        📎 첨부파일 (<span th:text="${#lists.size(files)}">0</span>개)
+                    </div>
+                    <div class="file-grid">
+                        <div th:each="file : ${files}" class="file-item">
+                            <!-- 이미지 파일인 경우 -->
+                            <div th:if="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
+                                        ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
+                                        ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
+                                        ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
+                                        ${#strings.toLowerCase(file.fileExtension)} == 'webp'">
+                                <img th:src="${file.fileUrl}" 
+                                     th:alt="${file.originalFileName}"
+                                     class="file-preview"/>
+                            </div>
+                            
+                            <!-- 이미지가 아닌 파일의 경우 -->
+                            <div th:unless="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
                                             ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
                                             ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
                                             ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
-                                            ${#strings.toLowerCase(file.fileExtension)} == 'webp'" 
-                                     style="margin: 5px 0;">
-                                    <img th:src="${file.fileUrl}" 
-                                         th:alt="${file.originalFileName}"
-                                         style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;"/>
+                                            ${#strings.toLowerCase(file.fileExtension)} == 'webp'">
+                                <div class="file-icon">📄</div>
+                            </div>
+                            
+                            <div class="file-name">
+                                <a th:href="${file.fileUrl}" target="_blank" th:text="${file.originalFileName}">파일명</a>
+                            </div>
+                            <div class="file-size" th:text="${#numbers.formatDecimal(file.fileSize/1024, 0, 0)} + 'KB'">파일크기</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="post-actions">
+                    <div class="action-buttons">
+                        <span th:if="${currentUser != null and currentUser == board.creator}">
+                            <a th:href="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}" class="action-btn btn-secondary">
+                                ✏️ 수정
+                            </a>
+                            <form th:action="@{/board/delete/{boardNum}(boardNum=${board.boardNum})}" 
+                                  method="post" style="display: inline;"
+                                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                <button type="submit" class="action-btn btn-danger">
+                                    🗑️ 삭제
+                                </button>
+                            </form>
+                        </span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Comments Section -->
+            <section class="comments-section">
+                <h2 class="comments-title">
+                    💬 댓글 (<span th:text="${replies != null ? #lists.size(replies) : 0}">0</span>개)
+                </h2>
+
+                <!-- Comment Form (로그인한 사용자만) -->
+                <div th:if="${currentUser != null}">
+                    <form th:action="@{/reply/{boardNum}(boardNum=${board.boardNum})}"
+                          th:object="${replyCreateRequest}" method="post" class="comment-form">
+                        <textarea th:field="*{replyContent}" 
+                                  class="comment-textarea" 
+                                  placeholder="댓글을 입력하세요..."
+                                  required></textarea>
+                        <div th:if="${#fields.hasErrors('replyContent')}" 
+                             th:errors="*{replyContent}" 
+                             class="error-message"></div>
+                        <div class="comment-form-footer">
+                            <span class="meta-item">
+                                👤 <span th:text="${currentUser}">사용자</span>
+                            </span>
+                            <button type="submit" class="action-btn btn-primary">
+                                💬 댓글 작성
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Login Notice (로그인 안 한 사용자) -->
+                <div th:if="${currentUser == null}" class="login-notice">
+                    <span>댓글을 작성하려면 </span>
+                    <a th:href="@{/login}">로그인</a>
+                    <span>이 필요합니다.</span>
+                </div>
+
+                <!-- Comment List -->
+                <div th:if="${replies != null and !replies.isEmpty()}" class="comment-list">
+                    <div th:each="reply : ${replies}" class="comment-item">
+                        <div class="comment-header">
+                            <div class="comment-author">
+                                <div class="author-avatar" th:text="${#strings.substring(reply.creator, 0, 1)}">A</div>
+                                <div>
+                                    <div class="author-name" th:text="${reply.creator}">작성자</div>
+                                    <div class="comment-time" th:text="${#temporals.format(reply.createTime, 'yyyy년 MM월 dd일 HH:mm')}">작성시간</div>
                                 </div>
-                                
-                                <!-- 이미지가 아닌 파일의 경우 -->
-                                <div th:unless="${#strings.toLowerCase(file.fileExtension)} == 'jpg' or 
-                                                ${#strings.toLowerCase(file.fileExtension)} == 'jpeg' or 
-                                                ${#strings.toLowerCase(file.fileExtension)} == 'png' or 
-                                                ${#strings.toLowerCase(file.fileExtension)} == 'gif' or
-                                                ${#strings.toLowerCase(file.fileExtension)} == 'webp'" 
-                                     style="color: #666; font-size: 14px; margin: 5px 0; padding: 20px; border: 1px solid #ddd; border-radius: 4px;">
-                                    📎 첨부파일
-                                </div>
+                            </div>
+                            <div class="comment-actions" th:if="${currentUser != null and currentUser == reply.creator}">
+                                <button type="button" class="comment-action edit-btn" th:onclick="|startEdit(${reply.replyNum})|">수정</button>
+                                <form th:action="@{/reply/{replyNum}/delete(replyNum=${reply.replyNum})}" 
+                                      method="post" style="display: inline;" 
+                                      onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                    <button type="submit" class="comment-action" style="border: none; background: none;">
+                                        삭제
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-
-    <tr>
-        <td align="right">
-            <!-- 로그인한 사용자가 작성자와 같을 때만 수정/삭제 버튼 표시 -->
-            <span th:if="${currentUser != null and currentUser == board.creator}">
-                <a th:href="@{/board/edit/{boardNum}(boardNum=${board.boardNum})}">Edit</a> |
-                <form th:action="@{/board/delete/{boardNum}(boardNum=${board.boardNum})}" method="post" style="display: inline;"
-                      onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                    <input type="submit" value="Delete" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;">
-                </form> |
-            </span>
-            <a th:href="@{/board/list}">List</a>
-        </td>
-    </tr>
-
-    <!-- 댓글 입력 폼 (로그인한 사용자만) -->
-    <tr th:if="${currentUser != null}">
-        <td>
-            <form th:action="@{/reply/{boardNum}(boardNum=${board.boardNum})}"
-                  th:object="${replyCreateRequest}" method="post">
-                <table border="1" style="margin-top: 20px;">
-                    <tr>
-                        <td width="120" align="center">
-                            댓글 작성
-                        </td>
-                        <td width="400">
-                            <textarea th:field="*{replyContent}" rows="3" cols="55" placeholder="댓글을 입력하세요"></textarea>
-                            <div th:if="${#fields.hasErrors('replyContent')}" th:errors="*{replyContent}" style="color: red;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="right">
-                            <input type="submit" value="댓글 작성">
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </td>
-    </tr>
-    
-    <!-- 로그인 안 한 사용자에게 안내 -->
-    <tr th:if="${currentUser == null}">
-        <td>
-            <div style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; text-align: center; background-color: #f9f9f9;">
-                <span style="color: #666;">댓글을 작성하려면 </span>
-                <a th:href="@{/login}" style="color: #007bff; text-decoration: none;">로그인</a>
-                <span style="color: #666;">이 필요합니다.</span>
-            </div>
-        </td>
-    </tr>
-
-    <!-- 댓글 목록 (입력 폼 아래로 이동) -->
-    <tr>
-        <td>
-            <!-- 댓글 목록 -->
-            <div th:if="${replies != null and !replies.isEmpty()}">
-                <table border="1" style="margin-top: 10px;">
-                    <tr>
-                        <td colspan="2" align="center" style="background-color: #f0f0f0;">
-                            <strong>댓글 목록</strong>
-                        </td>
-                    </tr>
-                    <tr th:each="reply : ${replies}">
-                        <td width="520" style="padding: 10px;">
-                            <div style="margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <strong th:text="${reply.creator}">작성자</strong>
-                                    <span style="color: #888; font-size: 12px;"
-                                          th:text="${#temporals.format(reply.createTime, 'yyyy-MM-dd HH:mm')}">작성시간</span>
+                        
+                        <!-- 기본 댓글 표시 -->
+                        <div th:id="|comment-display-${reply.replyNum}|" class="comment-content" th:text="${reply.replyContent}">댓글 내용</div>
+                        
+                        <!-- 수정 폼 (기본적으로 숨김) -->
+                        <div th:id="|comment-edit-${reply.replyNum}|" class="comment-edit-form" style="display: none;">
+                            <form th:action="@{/reply/{replyNum}/edit(replyNum=${reply.replyNum})}" method="post">
+                                <textarea th:id="|edit-textarea-${reply.replyNum}|" 
+                                          name="replyContent" 
+                                          class="edit-textarea" 
+                                          th:text="${reply.replyContent}"
+                                          required></textarea>
+                                <div class="edit-actions">
+                                    <button type="button" class="action-btn btn-secondary" th:onclick="|cancelEdit(${reply.replyNum})|">
+                                        취소
+                                    </button>
+                                    <button type="submit" class="action-btn btn-primary">
+                                        수정 완료
+                                    </button>
                                 </div>
-                                <div>
-                                    <!-- 로그인한 사용자가 댓글 작성자와 같을 때만 수정/삭제 버튼 표시 -->
-                                    <span th:if="${currentUser != null and currentUser == reply.creator}">
-                                        <a th:href="@{/reply/{replyNum}/edit(replyNum=${reply.replyNum})}" 
-                                           style="font-size: 12px;">수정</a> |
-                                        <form th:action="@{/reply/{replyNum}/delete(replyNum=${reply.replyNum})}" 
-                                              method="post" style="display: inline;" 
-                                              onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                                            <input type="submit" value="삭제" 
-                                                   style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font-size: 12px;">
-                                        </form>
-                                    </span>
-                                </div>
-                            </div>
-                            <div th:text="${reply.replyContent}" style="white-space: pre-wrap;">댓글 내용</div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- 댓글이 없을 때 -->
-            <div th:if="${replies == null or replies.isEmpty()}" style="margin-top: 10px; text-align: center; color: #888;">
-                등록된 댓글이 없습니다.
-            </div>
-        </td>
-    </tr>
-</table>
+                <!-- No Comments -->
+                <div th:if="${replies == null or replies.isEmpty()}" class="no-comments">
+                    아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요! 💭
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // 댓글 수정 시작
+        function startEdit(replyNum) {
+            // 기존 댓글 내용 숨기기
+            document.getElementById('comment-display-' + replyNum).style.display = 'none';
+            // 수정 폼 보이기
+            document.getElementById('comment-edit-' + replyNum).style.display = 'block';
+            // 텍스트 에리어에 포커스
+            document.getElementById('edit-textarea-' + replyNum).focus();
+        }
+
+        // 댓글 수정 취소
+        function cancelEdit(replyNum) {
+            // 수정 폼 숨기기
+            document.getElementById('comment-edit-' + replyNum).style.display = 'none';
+            // 기존 댓글 내용 보이기
+            document.getElementById('comment-display-' + replyNum).style.display = 'block';
+        }
+
+        // ESC 키로 수정 취소
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // 현재 열려있는 수정 폼 찾기
+                const editForms = document.querySelectorAll('.comment-edit-form');
+                editForms.forEach(form => {
+                    if (form.style.display === 'block') {
+                        const replyNum = form.id.split('-')[2];
+                        cancelEdit(replyNum);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
