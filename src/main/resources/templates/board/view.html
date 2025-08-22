@@ -96,10 +96,10 @@
         </td>
     </tr>
 
-    <!-- 댓글 입력 폼 (기존) -->
+    <!-- 댓글 입력 폼 -->
     <tr>
         <td>
-            <form th:action="@{/board/view/{boardNum}/reply(boardNum=${board.boardNum})}"
+            <form th:action="@{/reply/{boardNum}(boardNum=${board.boardNum})}"
                   th:object="${replyCreateRequest}" method="post">
                 <table border="1" style="margin-top: 20px;">
                     <tr>
@@ -143,9 +143,9 @@
                                 <div>
                                     <!-- 로그인한 사용자가 댓글 작성자와 같을 때만 수정/삭제 버튼 표시 -->
                                     <span th:if="${currentUser != null and currentUser == reply.creator}">
-                                        <a th:href="@{/board/view/{boardNum}/reply/{replyNum}/edit(boardNum=${board.boardNum},replyNum=${reply.replyNum})}" 
+                                        <a th:href="@{/reply/{replyNum}/edit(replyNum=${reply.replyNum})}" 
                                            style="font-size: 12px;">수정</a> |
-                                        <form th:action="@{/board/view/{boardNum}/reply/{replyNum}/delete(boardNum=${board.boardNum},replyNum=${reply.replyNum})}" 
+                                        <form th:action="@{/reply/{replyNum}/delete(replyNum=${reply.replyNum})}" 
                                               method="post" style="display: inline;" 
                                               onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                             <input type="submit" value="삭제" 

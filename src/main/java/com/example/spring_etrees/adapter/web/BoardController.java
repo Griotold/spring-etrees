@@ -7,9 +7,7 @@ import com.example.spring_etrees.application.board.provided.BoardModifier;
 import com.example.spring_etrees.application.common.ComCodeService;
 import com.example.spring_etrees.application.file.provided.FileFinder;
 import com.example.spring_etrees.application.file.provided.FileModifier;
-import com.example.spring_etrees.application.reply.provided.ReplyCreator;
 import com.example.spring_etrees.application.reply.provided.ReplyFinder;
-import com.example.spring_etrees.application.reply.provided.ReplyModifier;
 import com.example.spring_etrees.domain.board.Board;
 import com.example.spring_etrees.domain.board.BoardCreateRequest;
 import com.example.spring_etrees.domain.board.BoardUpdateRequest;
@@ -17,7 +15,6 @@ import com.example.spring_etrees.domain.comcode.ComCode;
 import com.example.spring_etrees.domain.file.File;
 import com.example.spring_etrees.domain.reply.Reply;
 import com.example.spring_etrees.domain.reply.ReplyCreateRequest;
-import com.example.spring_etrees.domain.reply.ReplyUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,9 +36,7 @@ public class BoardController {
     private final BoardCreator boardCreator;
     private final BoardFinder boardFinder;
     private final BoardModifier boardModifier;
-    private final ReplyCreator replyCreator;
     private final ReplyFinder replyFinder;
-    private final ReplyModifier replyModifier;
     private final ComCodeService comCodeService;
     private final FileModifier fileModifier;
     private final FileFinder fileFinder;
@@ -192,48 +187,5 @@ public class BoardController {
             // 권한 없음 에러 처리
             return "redirect:/board/view/" + boardNum + "?error=" + e.getMessage();
         }
-    }
-
-    /**
-     * 댓글 작성 처리
-     */
-    @PostMapping("/view/{boardNum}/reply")
-    public String createReply(@PathVariable Long boardNum,
-                              @Valid @ModelAttribute ReplyCreateRequest request) {
-        replyCreator.createReply(request);
-        return "redirect:/board/view/" + boardNum;
-    }
-
-    // 댓글 수정 폼 페이지
-    @GetMapping("/view/{boardNum}/reply/{replyNum}/edit")
-    public String replyEditForm(@PathVariable Long boardNum,
-                                @PathVariable Long replyNum,
-                                Model model) {
-        Board board = boardFinder.getBoard(boardNum);
-        Reply reply = replyFinder.getReply(replyNum);
-
-        ReplyUpdateRequest replyUpdateRequest = new ReplyUpdateRequest(reply.getReplyContent());
-
-        model.addAttribute("board", board);
-        model.addAttribute("reply", reply);
-        model.addAttribute("replyUpdateRequest", replyUpdateRequest);
-        return "reply/edit";
-    }
-
-    // 댓글 수정 처리
-    @PostMapping("/view/{boardNum}/reply/{replyNum}/edit")
-    public String updateReply(@PathVariable Long boardNum,
-                              @PathVariable Long replyNum,
-                              @Valid @ModelAttribute ReplyUpdateRequest request) {
-        replyModifier.updateReply(replyNum, request);
-        return "redirect:/board/view/" + boardNum;
-    }
-
-    // 댓글 삭제 처리
-    @PostMapping("/view/{boardNum}/reply/{replyNum}/delete")
-    public String deleteReply(@PathVariable Long boardNum,
-                              @PathVariable Long replyNum) {
-        replyModifier.deleteReply(replyNum);
-        return "redirect:/board/view/" + boardNum;
     }
 }
