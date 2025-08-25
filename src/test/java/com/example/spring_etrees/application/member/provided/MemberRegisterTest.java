@@ -17,8 +17,7 @@ record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityMan
 
     @Test
     void register() {
-        MemberCreateRequest request = MemberFixture.createRequest();
-        Member member = memberRegister.registerMember(request);
+        Member member = memberRegister.registerMember(MemberFixture.createRequest());
 
         assertThat(member.getId()).isNotNull();
     }

@@ -2,13 +2,11 @@ package com.example.spring_etrees.application.board.required;
 
 import com.example.spring_etrees.application.reply.required.ReplyRepository;
 import com.example.spring_etrees.domain.board.Board;
-import com.example.spring_etrees.domain.board.BoardCreateRequest;
 import com.example.spring_etrees.domain.board.BoardFixture;
 import com.example.spring_etrees.domain.board.BoardType;
 import com.example.spring_etrees.domain.reply.Reply;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +16,9 @@ import static org.assertj.core.api.Assertions.*;
 @ActiveProfiles("test")
 @SpringBootTest
 @Transactional
-class ReplyRepositoryTest {
-
-    @Autowired
-    private BoardRepository boardRepository;
-
-    @Autowired
-    private ReplyRepository replyRepository;
-
-    @Autowired
-    private EntityManager em;
+record ReplyRepositoryTest(BoardRepository boardRepository,
+                           ReplyRepository replyRepository,
+                           EntityManager em) {
 
     @Test
     void 게시글삭제시_댓글들도_함께삭제된다() {

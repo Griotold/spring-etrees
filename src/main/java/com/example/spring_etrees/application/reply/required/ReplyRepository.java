@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
-    // ReplyRepository에 추가
     List<Reply> findByBoardBoardNumOrderByCreateTimeAsc(Long boardNum);
 }
