@@ -101,6 +101,13 @@ public class Member {
     }
 
     /**
+     * 일반회원으로 강등
+     * */
+    public void  demoteToUser() {
+        this.role = Role.USER;
+    }
+
+    /**
      * 관리자 여부 확인
      * */
     public boolean isAdmin() {

@@ -39,6 +39,26 @@ public class MemberModifyService implements MemberRegister {
         return memberRepository.save(member);
     }
 
+    @Override
+    public Member promoteToAdmin(Long targetMemberId) {
+        Member member = memberRepository.findById(targetMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. memberId: {} " + targetMemberId));
+
+        member.promoteToAdmin();
+
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public Member demoteToUser(Long targetMemberId) {
+        Member member = memberRepository.findById(targetMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. memberId: {} " + targetMemberId));
+
+        member.demoteToUser();
+
+        return memberRepository.save(member);
+    }
+
 
     private void validateMemberRegistration(MemberCreateRequest request) {
         checkDuplicateUsername(request);

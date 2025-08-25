@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -126,7 +127,7 @@ public class MemberController {
      * 회원 목록 조회 (관리자만)
      */
     @GetMapping("/admin/members")
-    @PreAuthorize("hasRole('ADMIN')") // 또는 직접 권한 체크
+    @PreAuthorize("hasRole('ADMIN')")
     public String memberList(@RequestParam(defaultValue = "1") int pageNo,
                              @RequestParam(defaultValue = "10") int size,
                              @AuthenticationPrincipal LoginUser loginUser,
@@ -144,5 +145,41 @@ public class MemberController {
         model.addAttribute("currentPage", pageNo);
 
         return "admin/member-list";
+    }
+
+    /**
+     * 일반회원을 관리자로 승격
+     */
+    @PostMapping("/admin/members/promote")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String promoteToAdmin(@RequestParam("memberId") Long memberId,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            Member promotedMember = memberRegister.promoteToAdmin(memberId);
+            redirectAttributes.addFlashAttribute("message",
+                    promotedMember.getName() + "님을 관리자로 승격했습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        return "redirect:/admin/members";
+    }
+
+    /**
+     * 관리자를 일반회원으로 강등
+     */
+    @PostMapping("/admin/members/demote")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String demoteToUser(@RequestParam("memberId") Long memberId,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            Member demotedMember = memberRegister.demoteToUser(memberId);
+            redirectAttributes.addFlashAttribute("message",
+                    demotedMember.getName() + "님을 일반회원으로 강등했습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        return "redirect:/admin/members";
     }
 }

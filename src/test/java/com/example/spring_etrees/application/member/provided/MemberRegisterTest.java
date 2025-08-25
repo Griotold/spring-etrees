@@ -76,4 +76,46 @@ record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityMan
                 .isInstanceOf(DuplicateNameException.class);
 
     }
+
+    @Test
+    void promoteToAdmin() {
+        Member member = memberRegister.registerMember(MemberFixture.createRequest());
+
+        assertThat(member.isAdmin()).isFalse(); // 초기 상태는 일반 회원
+
+        Member promoted = memberRegister.promoteToAdmin(member.getId());
+
+        assertThat(promoted.getId()).isEqualTo(member.getId());
+        assertThat(promoted.isAdmin()).isTrue();
+        assertThat(promoted.getRole()).isEqualTo(Role.ADMIN);
+    }
+
+    @Test
+    void promoteToAdmin_없는_회원일_때() {
+        assertThatThrownBy(() -> memberRegister.promoteToAdmin(999L))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void demoteToUser() {
+        Member member = memberRegister.registerMember(MemberFixture.createRequest());
+
+        // 먼저 관리자로 승격
+        memberRegister.promoteToAdmin(member.getId());
+        assertThat(member.isAdmin()).isTrue();
+
+        // 일반회원으로 강등
+        Member demoted = memberRegister.demoteToUser(member.getId());
+
+        assertThat(demoted.getId()).isEqualTo(member.getId());
+        assertThat(demoted.isAdmin()).isFalse();
+        assertThat(demoted.getRole()).isEqualTo(Role.USER);
+    }
+
+    @Test
+    void demoteToUser_없는_회원일_때() {
+        assertThatThrownBy(() -> memberRegister.demoteToUser(999L))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }

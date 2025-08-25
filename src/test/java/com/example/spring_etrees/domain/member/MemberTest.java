@@ -4,9 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.example.spring_etrees.domain.member.MemberFixture.*;
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MemberTest {
 
@@ -48,6 +46,19 @@ class MemberTest {
         member.promoteToAdmin();
 
         assertThat(member.getRole()).isEqualTo(Role.ADMIN);
+    }
+
+    @Test
+    void demoteToUser() {
+        assertThat(member.getRole()).isEqualTo(Role.USER);
+
+        member.promoteToAdmin();
+
+        assertThat(member.getRole()).isEqualTo(Role.ADMIN);
+
+        member.demoteToUser();
+
+        assertThat(member.getRole()).isEqualTo(Role.USER);
     }
 
     @Test
