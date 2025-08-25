@@ -4,6 +4,8 @@ import com.example.spring_etrees.application.member.provided.MemberFinder;
 import com.example.spring_etrees.application.member.required.MemberRepository;
 import com.example.spring_etrees.domain.member.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +31,10 @@ public class MemberQueryService implements MemberFinder {
     public Member findById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. memberId: {} " + id));
+    }
+
+    @Override
+    public Page<Member> findAll(Pageable pageable) {
+        return memberRepository.findAll(pageable);
     }
 }

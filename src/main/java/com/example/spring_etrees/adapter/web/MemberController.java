@@ -6,6 +6,11 @@ import com.example.spring_etrees.application.member.provided.MemberRegister;
 import com.example.spring_etrees.domain.member.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -114,5 +120,29 @@ public class MemberController {
             model.addAttribute("errorMessage", e.getMessage());
             return "member/edit";
         }
+    }
+
+    /**
+     * 회원 목록 조회 (관리자만)
+     */
+    @GetMapping("/admin/members")
+    @PreAuthorize("hasRole('ADMIN')") // 또는 직접 권한 체크
+    public String memberList(@RequestParam(defaultValue = "1") int pageNo,
+                             @RequestParam(defaultValue = "10") int size,
+                             @AuthenticationPrincipal LoginUser loginUser,
+                             Model model) {
+
+        // 관리자 권한 체크
+        if (!loginUser.getMember().isAdmin()) {
+            throw new AccessDeniedException("관리자만 접근 가능합니다.");
+        }
+
+        Pageable pageable = PageRequest.of(pageNo - 1, size);
+        Page<Member> memberPage = memberFinder.findAll(pageable);
+
+        model.addAttribute("memberPage", memberPage);
+        model.addAttribute("currentPage", pageNo);
+
+        return "admin/member-list";
     }
 }

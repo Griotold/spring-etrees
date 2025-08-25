@@ -18,6 +18,10 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (member.isAdmin()) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

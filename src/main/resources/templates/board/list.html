@@ -114,6 +114,23 @@
             background: #059669;
         }
 
+        .admin-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s;
+        }
+
+        .admin-btn:hover {
+            background: #2563eb;
+        }
+
         .auth-section {
             display: flex;
             align-items: center;
@@ -412,6 +429,13 @@
                     <a href="/board/write" class="new-post-btn">
                         ✏️ New Post
                     </a>
+                    
+                    <!-- 관리자 전용 회원 관리 버튼 -->
+                    <span sec:authorize="hasRole('ADMIN')">
+                        <a href="/admin/members" class="admin-btn">
+                            👥 회원 관리
+                        </a>
+                    </span>
                     
                     <div class="auth-section">
                         <!-- 로그인 전: login, join 버튼 -->
