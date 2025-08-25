@@ -296,11 +296,6 @@
             </div>
 
             <div class="join-form">
-                <!-- 에러 메시지 표시 -->
-                <div th:if="${errorMessage}" class="message error">
-                    <span th:text="${errorMessage}"></span>
-                </div>
-
                 <form th:action="@{/join}" th:object="${memberCreateRequest}" method="post">
                     <!-- 첫 번째 줄: 아이디, 이름 -->
                     <div class="form-row">
@@ -322,11 +317,14 @@
                                    id="name" 
                                    th:field="*{name}"
                                    class="form-input" 
-                                   th:classappend="${#fields.hasErrors('name')} ? 'error' : ''"
+                                   th:classappend="${#fields.hasErrors('name') or (errorMessage != null and #strings.contains(errorMessage, '사용자명'))} ? 'error' : ''"
                                    placeholder="이름을 입력하세요">
                             <span th:if="${#fields.hasErrors('name')}" 
                                   th:errors="*{name}" 
                                   class="error-message"></span>
+                            <span th:if="${errorMessage != null and #strings.contains(errorMessage, '사용자명')}" 
+                                  class="error-message" 
+                                  th:text="${errorMessage}"></span>
                         </div>
                     </div>
 

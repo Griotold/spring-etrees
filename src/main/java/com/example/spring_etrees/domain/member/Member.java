@@ -53,6 +53,10 @@ public class Member {
     @Column(name = "MODIFIED_TIME")
     private LocalDateTime modifiedTime;
 
+    @Column(name = "ROLE")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     /**
      * 회원 등록 (정적 팩토리 메서드)
      */
@@ -66,6 +70,7 @@ public class Member {
         member.postNo = registerRequest.postNo();
         member.address = registerRequest.address();
         member.company = registerRequest.company();
+        member.role = Role.USER;
 
         return member;
     }
@@ -75,5 +80,30 @@ public class Member {
      */
     public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(password, passwordHash);
+    }
+
+    /**
+     * 업데이트
+     * */
+    public void updateInfo(MemberInfoUpdateRequest updateRequest) {
+        this.name = requireNonNull(updateRequest.name());
+        this.phone = requireNonNull(updateRequest.phone());
+        this.postNo = requireNonNull(updateRequest.postNo());
+        this.address = requireNonNull(updateRequest.address());
+        this.company = requireNonNull(updateRequest.company());
+    }
+
+    /**
+     * 관리자 승격
+     * */
+    public void promoteToAdmin() {
+        this.role = Role.ADMIN;
+    }
+
+    /**
+     * 관리자 여부 확인
+     * */
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
     }
 }

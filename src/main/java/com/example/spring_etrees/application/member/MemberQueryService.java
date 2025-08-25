@@ -24,4 +24,10 @@ public class MemberQueryService implements MemberFinder {
     public boolean existsByUsername(String username) {
         return memberRepository.existsByUsername(username);
     }
+
+    @Override
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. memberId: {} " + id));
+    }
 }

@@ -37,4 +37,14 @@ public class MemberFixture {
     public static MemberCreateRequest createRequest() {
         return createRequest("etrees", "myname");
     }
+
+    public static MemberInfoUpdateRequest createInfoUpdateRequest(String name) {
+        return new MemberInfoUpdateRequest(name, "010-9876-5432", "98765", "수정할 주소", "수정할 회사");
+    }
+
+    public static MemberInfoUpdateRequest createInfoUpdateRequest() {
+        return createInfoUpdateRequest("updating name");
+    }
+
+
 }

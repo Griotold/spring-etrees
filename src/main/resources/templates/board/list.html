@@ -421,7 +421,7 @@
                         </span>
                         <!-- 로그인 후: 사용자명, logout 버튼 -->
                         <span sec:authorize="isAuthenticated()">
-                            <span sec:authentication="name"></span>
+                            <a th:href="@{/member/profile}" sec:authentication="name"></a>
                             <form th:action="@{/logout}" method="post" style="display: inline;">
                                 <input type="submit" value="Logout" class="logout-btn">
                             </form>

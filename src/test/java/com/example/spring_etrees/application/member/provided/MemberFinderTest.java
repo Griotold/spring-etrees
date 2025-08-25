@@ -50,4 +50,22 @@ record MemberFinderTest(MemberFinder memberFinder,
         assertThat(result1).isTrue();
         assertThat(result2).isFalse();
     }
+
+    @Test
+    void findById() {
+        Member member = memberRegister.registerMember(MemberFixture.createRequest());
+
+        entityManager.flush();
+        entityManager.clear();
+
+        var founded = memberFinder.findById(member.getId());
+        assertThat(founded.getId()).isEqualTo(member.getId());
+        assertThat(founded.getUsername()).isEqualTo(member.getUsername());
+    }
+
+    @Test
+    void findById_없는_memberId() {
+        assertThatThrownBy(() -> memberFinder.findById(999L))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
