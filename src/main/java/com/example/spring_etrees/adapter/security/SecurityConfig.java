@@ -62,6 +62,12 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/board/list")
                         .permitAll()
                 )
+                .rememberMe(remember -> remember
+                        .key("forumspace-remember-me-key")
+                        .tokenValiditySeconds(86400 * 30) // 30일
+                        .userDetailsService(userDetailsService)
+                        .rememberMeParameter("remember-me") // 체크박스 name
+                )
                 .authenticationProvider(authenticationProvider());
 
         return http.build();
