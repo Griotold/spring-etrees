@@ -316,7 +316,7 @@
                             <input type="text" 
                                    id="name" 
                                    th:field="*{name}"
-                                   class="form-input" 
+                                   class="form-input"
                                    th:classappend="${#fields.hasErrors('name') or (errorMessage != null and #strings.contains(errorMessage, '사용자명'))} ? 'error' : ''"
                                    placeholder="이름을 입력하세요">
                             <span th:if="${#fields.hasErrors('name')}" 
@@ -428,5 +428,29 @@
             </div>
         </div>
     </div>
+    <script>
+        const nameInput = document.getElementById('name');
+        let isComposing = false;
+
+        if (nameInput) {
+            // 한글 조합 시작
+            nameInput.addEventListener('compositionstart', () => {
+                isComposing = true;
+            });
+
+            // 한글 조합 끝
+            nameInput.addEventListener('compositionend', () => {
+                isComposing = false;
+                nameInput.value = nameInput.value.replace(/[^가-힣]/g, '');
+            });
+
+            // 입력 이벤트
+            nameInput.addEventListener('input', () => {
+                if (!isComposing) {
+                    nameInput.value = nameInput.value.replace(/[^가-힣]/g, '');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
