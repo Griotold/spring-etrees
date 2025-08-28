@@ -49,6 +49,7 @@ public class ComCode {
             case "a02": return BoardType.QNA;
             case "a03": return BoardType.ANONYMOUS;
             case "a04": return BoardType.FREE;
+            case "a05": return BoardType.ALL;
             default: return BoardType.GENERAL;
         }
     }

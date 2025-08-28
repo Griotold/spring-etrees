@@ -46,7 +46,7 @@ public class BoardQueryService implements BoardFinder {
     }
 
     private boolean shouldReturnAllBoards(List<String> types) {
-        return types == null || types.isEmpty() || types.contains("all");
+        return types == null || types.isEmpty() || types.contains("all") || types.contains("ALL");
     }
 
     private List<BoardType> convertToBoardTypes(List<String> types) {

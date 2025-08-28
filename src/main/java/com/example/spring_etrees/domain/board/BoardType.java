@@ -9,7 +9,8 @@ public enum BoardType {
     GENERAL("a01", "일반"),
     QNA("a02", "Q&A"),
     ANONYMOUS("a03", "익명"),
-    FREE("a04", "자유");
+    FREE("a04", "자유"),
+    ALL("a05", "전체");
 
     private final String code;
     private final String description;
