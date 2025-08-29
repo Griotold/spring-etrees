@@ -152,9 +152,17 @@
             margin-top: 10px;
         }
 
-        .join-button:hover {
+        .join-button:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .join-button:disabled {
+            background: #d1d5db !important;
+            color: #9ca3af !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            transform: none !important;
         }
 
         .form-footer {
@@ -335,6 +343,7 @@
                             <input type="password" 
                                    id="password" 
                                    th:field="*{password}"
+                                   th:value="*{password}"
                                    class="form-input" 
                                    th:classappend="${#fields.hasErrors('password')} ? 'error' : ''"
                                    placeholder="6-20자 사이로 입력하세요">
@@ -347,6 +356,7 @@
                             <input type="password" 
                                    id="passwordCheck" 
                                    th:field="*{passwordCheck}"
+                                   th:value="*{passwordCheck}"
                                    class="form-input" 
                                    th:classappend="${#fields.hasErrors('passwordCheck')} ? 'error' : ''"
                                    placeholder="비밀번호를 다시 입력하세요">
@@ -359,7 +369,7 @@
                     <!-- 세 번째 줄: 전화번호, 우편번호 -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="phone" class="form-label">전화번호</label>
+                            <label for="phone" class="form-label required">전화번호</label>
                             <input type="text" 
                                    id="phone" 
                                    th:field="*{phone}"
@@ -430,9 +440,21 @@
     </div>
     <script>
         const nameInput = document.getElementById('name');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const passwordCheckInput = document.getElementById('passwordCheck');
         let isComposing = false;
 
+        // 이름 입력 필드 (한글만 허용)
         if (nameInput) {
+            const nameErrorSpan = nameInput.parentNode.querySelector('.error-message');
+            let originalErrorMessage = '';
+            
+            // 페이지 로딩 시 원본 에러 메시지 저장
+            if (nameErrorSpan) {
+                originalErrorMessage = nameErrorSpan.textContent;
+            }
+
             // 한글 조합 시작
             nameInput.addEventListener('compositionstart', () => {
                 isComposing = true;
@@ -442,6 +464,8 @@
             nameInput.addEventListener('compositionend', () => {
                 isComposing = false;
                 nameInput.value = nameInput.value.replace(/[^가-힣]/g, '');
+                // 조합 완료 후에도 중복 에러 체크
+                checkNameDuplicate();
             });
 
             // 입력 이벤트
@@ -449,8 +473,278 @@
                 if (!isComposing) {
                     nameInput.value = nameInput.value.replace(/[^가-힣]/g, '');
                 }
+                // 입력할 때마다 중복 에러 체크
+                checkNameDuplicate();
             });
+
+            // 이름 중복 에러 체크 함수
+            function checkNameDuplicate() {
+                const currentValue = nameInput.value;
+                
+                // 에러 메시지가 있고, 중복 관련 메시지인 경우
+                if (nameErrorSpan && originalErrorMessage && 
+                    (originalErrorMessage.includes('중복') || originalErrorMessage.includes('사용자명'))) {
+                    
+                    // 새로운 값이 입력되면 중복 에러 메시지 숨기기
+                    if (currentValue.length > 0) {
+                        nameErrorSpan.style.display = 'none';
+                        nameInput.classList.remove('error');
+                    } else {
+                        // 값이 비어있으면 원본 에러 표시
+                        nameErrorSpan.style.display = 'block';
+                        nameErrorSpan.textContent = originalErrorMessage;
+                        nameInput.classList.add('error');
+                    }
+                }
+                
+                // 전체 폼 유효성 검사
+                validateForm();
+            }
         }
+
+        // 아이디 입력 필드 유효성 검사
+        if (usernameInput) {
+            const usernameErrorSpan = usernameInput.parentNode.querySelector('.error-message');
+            let originalErrorMessage = '';
+            
+            // 페이지 로딩 시 원본 에러 메시지 저장
+            if (usernameErrorSpan) {
+                originalErrorMessage = usernameErrorSpan.textContent;
+            }
+
+            usernameInput.addEventListener('input', (e) => {
+                const value = e.target.value;
+                console.log('아이디 입력:', value, '길이:', value.length); // 디버깅용
+                
+                // 20자 이상 입력 제한
+                if (value.length > 20) {
+                    e.target.value = value.substring(0, 20);
+                    return;
+                }
+                
+                // 에러 메시지 동적 처리
+                if (usernameErrorSpan) {
+                    // 입력이 있고 길이가 적절한 경우
+                    if (value.length > 0 && value.length >= 4 && value.length <= 20) {
+                        // 에러 메시지 숨기기
+                        console.log('아이디 유효함 - 에러 메시지 숨김'); // 디버깅용
+                        usernameErrorSpan.style.display = 'none';
+                        usernameInput.classList.remove('error');
+                    } 
+                    // 입력이 있지만 길이가 부적절한 경우
+                    else if (value.length > 0 && (value.length < 4 || value.length > 20)) {
+                        console.log('아이디 길이 부적절 - 에러 메시지 표시'); // 디버깅용
+                        usernameErrorSpan.style.display = 'block';
+                        usernameErrorSpan.textContent = '아이디는 4-20자 사이여야 합니다';
+                        usernameInput.classList.add('error');
+                    }
+                    // 입력이 아예 없는 경우
+                    else if (value.length === 0) {
+                        // 원본 서버 에러가 있다면 표시, 없다면 숨기기
+                        if (originalErrorMessage && originalErrorMessage.trim() !== '') {
+                            console.log('입력 없음 - 원본 에러 표시'); // 디버깅용
+                            usernameErrorSpan.style.display = 'block';
+                            usernameErrorSpan.textContent = originalErrorMessage;
+                            usernameInput.classList.add('error');
+                        } else {
+                            console.log('입력 없음 - 에러 숨김'); // 디버깅용
+                            usernameErrorSpan.style.display = 'none';
+                            usernameInput.classList.remove('error');
+                        }
+                    }
+                }
+                
+                // 전체 폼 유효성 검사
+                validateForm();
+            });
+
+            // 실시간으로 20자 제한 체크
+            usernameInput.addEventListener('keydown', (e) => {
+                const value = e.target.value;
+                // 백스페이스, 델리트, 화살표 키, 탭 등은 허용
+                const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
+                
+                if (value.length >= 20 && !allowedKeys.includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            // 페이지 로드 시 초기 상태 체크
+            if (usernameInput.value.length > 0 && usernameInput.value.length >= 4 && usernameInput.value.length <= 20) {
+                if (usernameErrorSpan) {
+                    usernameErrorSpan.style.display = 'none';
+                    usernameInput.classList.remove('error');
+                }
+            }
+        }
+
+        // 전체 폼 유효성 검사 및 버튼 활성화/비활성화
+        function validateForm() {
+            const submitButton = document.querySelector('.join-button');
+            if (!submitButton) return;
+
+            // 필수 필드들 확인
+            const requiredFields = {
+                username: usernameInput?.value?.trim() || '',
+                name: nameInput?.value?.trim() || '',
+                password: passwordInput?.value?.trim() || '',
+                passwordCheck: passwordCheckInput?.value?.trim() || '',
+                phone: document.getElementById('phone')?.value?.trim() || ''
+            };
+
+            // 모든 필수 필드가 입력되었는지 확인
+            const allFieldsFilled = Object.values(requiredFields).every(value => value.length > 0);
+
+            // 에러 상태 확인
+            const hasErrors = checkAllErrors();
+
+            // 버튼 활성화/비활성화 결정
+            if (allFieldsFilled && !hasErrors) {
+                // 모든 조건 만족 - 버튼 활성화
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+                submitButton.style.cursor = 'pointer';
+                submitButton.title = '';
+            } else {
+                // 조건 불만족 - 버튼 비활성화
+                submitButton.disabled = true;
+                submitButton.style.opacity = '0.5';
+                submitButton.style.cursor = 'not-allowed';
+                
+                // 적절한 툴팁 메시지 설정
+                if (!allFieldsFilled) {
+                    submitButton.title = '모든 필수 항목을 입력해주세요';
+                } else if (hasErrors) {
+                    submitButton.title = '입력 오류를 수정해주세요';
+                }
+            }
+        }
+
+        // 모든 에러 상태 확인
+        function checkAllErrors() {
+            let hasErrors = false;
+
+            // 아이디 에러 확인
+            if (usernameInput) {
+                const usernameErrorSpan = usernameInput.parentNode.querySelector('.error-message');
+                const usernameValue = usernameInput.value.trim();
+                
+                if (usernameValue.length > 0 && (usernameValue.length < 4 || usernameValue.length > 20)) {
+                    hasErrors = true;
+                } else if (usernameErrorSpan && usernameErrorSpan.style.display !== 'none' && usernameErrorSpan.textContent.trim() !== '') {
+                    hasErrors = true;
+                }
+            }
+
+            // 이름 에러 확인
+            if (nameInput) {
+                const nameErrorSpan = nameInput.parentNode.querySelector('.error-message');
+                if (nameErrorSpan && nameErrorSpan.style.display !== 'none' && nameErrorSpan.textContent.trim() !== '') {
+                    hasErrors = true;
+                }
+            }
+
+            // 비밀번호 일치 확인
+            if (passwordInput && passwordCheckInput) {
+                const password = passwordInput.value.trim();
+                const passwordCheck = passwordCheckInput.value.trim();
+                
+                if (passwordCheck.length > 0 && password !== passwordCheck) {
+                    hasErrors = true;
+                }
+            }
+
+            // 비밀번호 길이 확인
+            if (passwordInput) {
+                const passwordValue = passwordInput.value.trim();
+                if (passwordValue.length > 0 && (passwordValue.length < 6 || passwordValue.length > 20)) {
+                    hasErrors = true;
+                }
+            }
+
+            // 전화번호 형식 확인
+            const phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                const phoneValue = phoneInput.value.trim();
+                const phonePattern = /^010-\d{4}-\d{4}$/;
+                if (phoneValue.length > 0 && !phonePattern.test(phoneValue)) {
+                    hasErrors = true;
+                }
+            }
+
+            return hasErrors;
+        }
+        function checkPasswordMatch() {
+            if (passwordInput && passwordCheckInput) {
+                const password = passwordInput.value;
+                const passwordCheck = passwordCheckInput.value;
+                const passwordCheckErrorSpan = passwordCheckInput.parentNode.querySelector('.error-message');
+                
+                // 비밀번호 확인 필드에 입력이 있고, 비밀번호와 다른 경우
+                if (passwordCheck.length > 0 && password !== passwordCheck) {
+                    if (passwordCheckErrorSpan) {
+                        passwordCheckErrorSpan.style.display = 'block';
+                        passwordCheckErrorSpan.textContent = '비밀번호가 일치하지 않습니다';
+                        passwordCheckInput.classList.add('error');
+                    } else {
+                        // 에러 스팬이 없으면 동적으로 생성
+                        const newErrorSpan = document.createElement('span');
+                        newErrorSpan.className = 'error-message';
+                        newErrorSpan.textContent = '비밀번호가 일치하지 않습니다';
+                        newErrorSpan.style.display = 'block';
+                        passwordCheckInput.parentNode.appendChild(newErrorSpan);
+                        passwordCheckInput.classList.add('error');
+                    }
+                } 
+                // 비밀번호가 일치하거나 비밀번호 확인 필드가 비어있는 경우
+                else if (passwordCheck.length === 0 || password === passwordCheck) {
+                    if (passwordCheckErrorSpan) {
+                        // 서버에서 온 다른 에러가 있는지 확인
+                        const originalMessage = passwordCheckErrorSpan.getAttribute('data-original-message');
+                        if (originalMessage && originalMessage !== '비밀번호가 일치하지 않습니다') {
+                            passwordCheckErrorSpan.textContent = originalMessage;
+                            passwordCheckErrorSpan.style.display = 'block';
+                            passwordCheckInput.classList.add('error');
+                        } else {
+                            passwordCheckErrorSpan.style.display = 'none';
+                            passwordCheckInput.classList.remove('error');
+                        }
+                    }
+                }
+            }
+            
+            // 전체 폼 유효성 검사
+            validateForm();
+        }
+
+        if (passwordInput && passwordCheckInput) {
+            // 페이지 로드 시 기존 에러 메시지 저장
+            const passwordCheckErrorSpan = passwordCheckInput.parentNode.querySelector('.error-message');
+            if (passwordCheckErrorSpan && passwordCheckErrorSpan.textContent.trim() !== '') {
+                passwordCheckErrorSpan.setAttribute('data-original-message', passwordCheckErrorSpan.textContent);
+            }
+
+            // 비밀번호 입력 시 확인
+            passwordInput.addEventListener('input', checkPasswordMatch);
+            
+            // 비밀번호 확인 입력 시 확인
+            passwordCheckInput.addEventListener('input', checkPasswordMatch);
+
+            // 페이지 로드 시 초기 상태 체크
+            checkPasswordMatch();
+        }
+
+        // 전화번호 필드 이벤트 리스너 추가
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', validateForm);
+        }
+
+        // 페이지 로드 시 초기 폼 상태 검사
+        document.addEventListener('DOMContentLoaded', validateForm);
+        
+        // 모든 입력 필드에 이벤트 리스너가 설정된 후 초기 검사 실행
+        setTimeout(validateForm, 100);
     </script>
 </body>
 </html>
